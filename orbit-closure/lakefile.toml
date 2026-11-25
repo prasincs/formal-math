@@ -1,4 +1,4 @@
-name = "mulmuley-sohoni"
+name = "orbit-closure"
 defaultTargets = ["OrbitStatement", "Bridge", "OrbitMain"]
 
 [leanOptions]

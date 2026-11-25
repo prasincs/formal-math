@@ -1,6 +1,3 @@
-exporter rc 0
-export rc 0  835766441 35 s
-NANODA rc 0
 theorem padded_permanent_not_mem : PaddedPermanentNotMem := _
 
 def PaddedPermanentNotMem :
@@ -72,15 +69,14 @@ axiom Quot.sound.{u} {α : Sort u} {r : α → α → Sort 0} {a b : α} : r a b
 axiom Classical.choice.{u} {α : Sort u} : Nonempty α → α
 
 Checked 80058 declarations with no errors
-
-
-REJECTED padded_permanent_not_mem with the value of MS.approximates_of_mem | rc 101 thread 'thread_2' (186) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run with `RUST_BACKTRACE
-REJECTED padded_permanent_not_mem with the value of Solution.mainTheoremApprox | rc 101 thread 'thread_10' (207) panicked at src/tc.rs:587:13: assertion failed: self.ctx.all_uparams_defined(l, declar_info.upa
-REJECTED padded_permanent_not_mem with the value of MS.bridge | rc 101 thread 'thread_0' (210) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run with `RUST_BACKTRACE
-REJECTED MS.bridge with the value of MS.approximates_of_mem | rc 101 thread 'thread_0' (223) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run with `RUST_BACKTRACE
-REJECTED MS.approximates_of_mem with the value of MS.arc_of_orbit | rc 101 thread 'thread_11' (247) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run with `RUST_BACKTRAC
-REJECTED MS.arc with the value of MS.conj | rc 101 thread 'thread_3' (252) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run with `RUST_BACKTRACE
-REJECTED MS.conj with the value of MS.extend | rc 101 thread 'thread_7' (269) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run with `RUST_BACKTRACE
-REJECTED MS.cost_det with the value of MS.cost_cp | rc 101 thread 'thread_4' (279) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run with `RUST_BACKTRACE
-REJECTED padded_permanent_not_mem with the type of Solution.mainTheoremApprox | rc 101 thread 'thread_9' (297) panicked at src/tc.rs:207:11: assertion failed: used_levels.is_subset(&declar_uparams) note: run
-RESULT ACCEPTED by nanoda, all controls rejected
+ 
+REJECTED | padded_permanent_not_mem with the value of MS.approximates_of_mem | thread 'thread_1' (13) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
+REJECTED | padded_permanent_not_mem with the value of Solution.mainTheoremApprox | thread 'thread_0' (21) panicked at src/tc.rs:587:13: assertion failed: self.ctx.all_uparams_defined(
+REJECTED | padded_permanent_not_mem with the value of MS.bridge | thread 'thread_2' (32) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
+REJECTED | MS.bridge with the value of MS.approximates_of_mem | thread 'thread_7' (46) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
+REJECTED | MS.approximates_of_mem with the value of MS.arc_of_orbit | thread 'thread_0' (48) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
+REJECTED | MS.arc with the value of MS.conj | thread 'thread_1' (58) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
+REJECTED | MS.conj with the value of MS.extend | thread 'thread_1' (67) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
+REJECTED | MS.cost_det with the value of MS.cost_cp | thread 'thread_4' (79) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
+REJECTED | padded_permanent_not_mem with the type of Solution.mainTheoremApprox | thread 'thread_0' (84) panicked at src/tc.rs:207:11: assertion failed: used_levels.is_subset(&declar
+RESULT accepted, all controls rejected

@@ -1,13 +1,20 @@
-"""Check an export of `padded_permanent_not_mem` with nanoda, then check that tampered copies are rejected.
+"""Second-kernel check of one project: nanoda on an export, then tampered copies that must all be rejected.
 
-    lean4export OrbitMain -- padded_permanent_not_mem > export      (lean4export at tag v4.33.0, with LEAN_PATH from `lake env`)
-    python3 check_export.py export /path/to/nanoda_bin
+    cd <project> && lake env lean4export <Module> -- <theorem> > export     (lean4export at the tag of the project's Lean)
+    python3 ../tools/nanoda_check.py verify/nanoda.json export /path/to/nanoda_bin
+
+`verify/nanoda.json` names the theorem, the definitions to print, and the controls [target, donor, "value" | "type"]:
+the target gets the donor's proof term or statement. A control must change what is claimed; two proofs of the same statement may be swapped freely.
 """
-import json, pathlib, shutil, subprocess, sys, tempfile
+import json
+import pathlib
+import shutil
+import subprocess
+import sys
+import tempfile
 
-ex, nanoda = pathlib.Path(sys.argv[1]), sys.argv[2]
+spec, ex, nanoda = json.loads(pathlib.Path(sys.argv[1]).read_text()), pathlib.Path(sys.argv[2]), sys.argv[3]
 tmp = pathlib.Path(tempfile.mkdtemp())
-DEFS = ["PaddedPermanentNotMem"] + ["PEqualNP.Gct." + x for x in ("detPoly", "permPoly", "linSubst", "orbitClosure", "padIndex", "paddedPerm")]
 
 
 def run(path, show=()):
@@ -19,7 +26,7 @@ def run(path, show=()):
     return r.returncode, r.stdout, " ".join(r.stderr.split())[:160]
 
 
-rc, out, err = run(ex, ["padded_permanent_not_mem", *DEFS])
+rc, out, err = run(ex, [spec["theorem"], *spec["show"]])
 print(out, err)
 bad = rc != 0
 thms, names, off = [], {}, 0
@@ -42,10 +49,9 @@ def name(i):
 
 
 ix = {name(t["name"]): i for i, (_, t) in enumerate(thms)}
-
-
-def control(a, b, field="value"):
-    global bad
+if not spec["controls"]:
+    sys.exit("no controls listed")
+for a, b, field in spec["controls"]:
     new = thms[ix[a]][1] | {field: thms[ix[b]][1][field]}
     p = tmp / "bad"
     with ex.open("rb") as f, p.open("wb") as g:
@@ -61,12 +67,5 @@ def control(a, b, field="value"):
     p.unlink()
     bad |= rc == 0
     print("REJECTED" if rc else "ACCEPTED (!)", "|", a, "with the", field, "of", b, "|", err[:100])
-
-
-T = "padded_permanent_not_mem"
-for a, b in ((T, "MS.approximates_of_mem"), (T, "Solution.mainTheoremApprox"), (T, "MS.bridge"), ("MS.bridge", "MS.approximates_of_mem"),
-             ("MS.approximates_of_mem", "MS.arc_of_orbit"), ("MS.arc", "MS.conj"), ("MS.conj", "MS.extend"), ("MS.cost_det", "MS.cost_cp")):
-    control(a, b)
-control(T, "Solution.mainTheoremApprox", "type")
 print("RESULT", "FAILED" if bad else "accepted, all controls rejected")
 sys.exit(bad)
