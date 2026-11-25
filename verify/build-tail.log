@@ -1,0 +1,5 @@
+✔ [9032/9035] Built Paper.Approximate (2.2s)
+✔ [9033/9035] Built Solution (1.6s)
+ℹ [9034/9035] Built OrbitMain (1.6s)
+info: OrbitMain.lean:10:0: 'padded_permanent_not_mem' depends on axioms: [propext, Classical.choice, Quot.sound]
+Build completed successfully (9035 jobs).

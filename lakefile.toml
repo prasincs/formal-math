@@ -1,0 +1,23 @@
+name = "mulmuley-sohoni"
+defaultTargets = ["OrbitStatement", "Bridge", "OrbitMain"]
+
+[leanOptions]
+autoImplicit = false
+
+[[require]]
+name = "vp-vnp"
+git = "https://github.com/anthropics/formal-math"
+rev = "11b6c7e3c927df2658f513b6b68ea7f8929c62c5"
+subDir = "vp-vnp"
+
+[[lean_lib]]
+name = "OrbitStatement"
+
+[[lean_lib]]
+name = "Bridge"
+
+[[lean_lib]]
+name = "OrbitMain"
+
+[[lean_lib]]
+name = "OrbitChallenge"

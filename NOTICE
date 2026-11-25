@@ -1,0 +1,8 @@
+mulmuley-sohoni-lean: the orbit-closure form of the Mulmuley-Sohoni conjecture from vp-vnp
+Copyright 2026 GitHub user prasincs
+
+Licensed under the Apache License, Version 2.0 (see LICENSE).
+
+OrbitStatement.lean contains definitions copied unchanged from open-goat/pequalnp-proofs (lean/PEqualNP/Defs/Gct.lean), Apache License 2.0.
+The proof uses, and does not include, anthropics/formal-math vp-vnp (Copyright 2026 Anthropic, PBC; Apache License 2.0) and mathlib4 with its standard dependencies,
+fetched by the build tool at the revisions in lake-manifest.json.
