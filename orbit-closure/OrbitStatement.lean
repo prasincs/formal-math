@@ -99,3 +99,7 @@ def PaddedPermanentNotMemZariski : Prop :=
 def PaddedPermanentNotMemProjective : Prop :=
   ∀ c : ℕ, 1 ≤ c → ∃ m₀ : ℕ, ∀ m ≥ m₀,
     PEqualNP.Gct.paddedPerm ℂ m (m ^ c) ∉ PEqualNP.Gct.projectiveSLClosure (PEqualNP.Gct.detPoly ℂ (m ^ c + 1))
+
+/-- The border determinantal complexity of the permanent over `ℂ` (limits of determinants of affine matrices) is superpolynomial. -/
+def BorderDetSuperpolynomial : Prop :=
+  ∀ d : ℕ, ∃ m₀ : ℕ, ∀ m ≥ m₀, ∀ n, PEqualNP.Gct.HasBorderDetExpression (PEqualNP.Gct.permPoly ℂ m) n → m ^ d < n

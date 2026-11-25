@@ -13,3 +13,6 @@ theorem padded_permanent_not_mem_zariski : PaddedPermanentNotMemZariski := by
 
 theorem padded_permanent_not_mem_projective : PaddedPermanentNotMemProjective := by
   sorry
+
+theorem border_det_superpolynomial : BorderDetSuperpolynomial := by
+  sorry

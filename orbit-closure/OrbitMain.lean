@@ -16,9 +16,7 @@ theorem padded_permanent_not_mem_zariski : PaddedPermanentNotMemZariski := MS.br
 theorem padded_permanent_not_mem_projective : PaddedPermanentNotMemProjective := MS.bridge_projective Solution.mainTheoremApprox
 
 /-- Border determinantal expressions of the permanent over `ℂ` have superpolynomial size. -/
-theorem border_det_superpolynomial (d : ℕ) :
-    ∃ m₀ : ℕ, ∀ m ≥ m₀, ∀ n, PEqualNP.Gct.HasBorderDetExpression (PEqualNP.Gct.permPoly ℂ m) n → m ^ d < n :=
-  MS.bridge_border Solution.mainTheoremApprox d
+theorem border_det_superpolynomial : BorderDetSuperpolynomial := MS.bridge_border Solution.mainTheoremApprox
 
 /-- The cubic border bound, in the form of `L-gct-026`. -/
 theorem border_det_cubic :

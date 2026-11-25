@@ -15,6 +15,9 @@ theorem padded_permanent_not_mem :
 | `padded_permanent_not_mem_zariski` | Zariski closure of the `GL`-orbit; contains the first one (`MS.orbitClosure_subset_zariski`) |
 | `padded_permanent_not_mem_projective` | limits of scalar multiples of the `SL`-orbit, that is, of the `SL`-orbit in projective space |
 
+Also proved, with limits of determinants of affine matrices over ℂ in place of the orbit: `border_det_superpolynomial`, the border determinantal complexity of the permanent exceeds `m ^ d` for every
+`d` and all large `m`. (`border_det_cubic` is the case `d = 3`, in the form of `L-gct-026`; OpenAI has a Lean proof of that case, with explicit constants and for `m ≥ 1408`, see below.)
+
 The file to read is [OrbitStatement.lean](OrbitStatement.lean) (imports only Mathlib).
 
 **The lower bound is not ours.** It is the theorem on approximating circuits (`mainTheoremApprox`) of Anthropic's
@@ -28,7 +31,8 @@ step from that theorem to the orbit closure. If that theorem is wrong, so is thi
 | `OrbitStatement.lean` | definitions (copied unchanged from [open-goat/pequalnp-proofs](https://github.com/open-goat/pequalnp-proofs), `lean/PEqualNP/Defs/Gct.lean`) and the statement |
 | `Bridge.lean` | `MS.bridge : Statement.MainTheoremApprox → PaddedPermanentNotMem` |
 | `Variants.lean` | the Zariski and the projective form |
-| `OrbitMain.lean` | the three theorems, from `Solution.mainTheoremApprox` |
+| `BorderDet.lean` | border determinantal complexity |
+| `OrbitMain.lean` | the theorems, from `Solution.mainTheoremApprox` |
 | `OrbitChallenge.lean`, `comparator.json` | the statements with `sorry`, for comparison tools |
 | `verify/` | second-kernel check with tampered controls (run by `../tools/nanoda_check.py`), and the logs |
 | `PROCESS.md` | how it was made, by whom, and what went wrong on the way |
@@ -45,7 +49,7 @@ With [elan](https://github.com/leanprover/elan), in this folder:
     lake build
 
 (We built offline with the same pins; this online route has not been run by us.) The build fetches vp-vnp at commit `11b6c7e3` and Mathlib at `0df444a3`, and prints the axioms of the theorems: `propext, Classical.choice, Quot.sound`.
-Checked here on 2026-11-25: a clean offline build (9,036 jobs), and the independent kernel [nanoda](https://github.com/ammkrn/nanoda_lib) (80,084 declarations, no error; thirteen
+Checked here on 2026-11-25: a clean offline build (9,037 jobs), and the independent kernel [nanoda](https://github.com/ammkrn/nanoda_lib) (80,114 declarations, no error; fifteen
 tampered copies all rejected, each for a type error). See `verify/`. The comparator configuration has not been run.
 
 ## The conjecture, and which part of it this is
@@ -66,12 +70,14 @@ A readable account is K. W. Regan, [*Understanding the Mulmuley–Sohoni approac
 * **Anthropic, vp-vnp** (23 Nov 2026): the lower bound; Remark N.6 states the consequence for determinantal complexity and orbit closures and says it is not formalized.
 * **OpenAI, [VP and VNP are different](https://github.com/openai/math/tree/main/preprints/VP-and-VNP-are-different-November-23-2026)** (23 Nov 2026), Corollary 1.2: states that the padded permanent
   is excluded from the determinant orbit closure, for padding up to `exp(c (log m)^(5/4))`. Their Lean scope notes say the border bound for the permanent is not formalized.
+* **OpenAI, [A cubic lower bound for border determinantal complexity of the permanent](https://github.com/openai/math/tree/main/preprints/A-cubic-lower-bound-for-border-determinantal-complexity-of-the-permanent-September-24-2026)** (24 Sep 2026): `m³ / (5529600 e)` for `m ≥ 1408`; the repository
+  lists a Lean proof with limits over ℂ (`lean/ComparatorChallenges/PermanentCubic.lean`; statement read, not built by us). It does not depend on vp-vnp, has explicit constants, and is earlier; ours has a larger asymptotic bound and no explicit threshold.
 * **[agentcarlosian/vp-vnp-lab](https://github.com/agentcarlosian/vp-vnp-lab/tree/main/remark-n6-lean)** (24–25 Nov 2026): Remark N.6 in Lean, unconditional, for determinants approximated over Laurent series, every characteristic
   but two, size `m ^ (c (log m)^(1/3))`. Earlier than this repository, and quantitatively stronger; it does not treat limits of the orbit or the padding.
 * **[carlostoledo1891/cert-machine](https://github.com/carlostoledo1891/cert-machine/tree/main/corpus/vp-vnp/lean/n6)** (24 Nov 2026): Remark N.6 from the main theorem as a hypothesis.
 * Independent checks of vp-vnp itself: 2opremio/vp-vnp-statement-check, Horace-Maxwell/vp-vnp-lean-independent-verification, kim-em/vp-vnp (newer Lean).
 
-What we did not find elsewhere is the orbit-closure form with limits over ℂ. No code from the projects in this list other than vp-vnp itself is used. The idea of the bridge is classical (curve selection; Berkowitz 1984).
+What we did not find elsewhere is the orbit-closure form with limits over ℂ, or the superpolynomial border bound with limits over ℂ. No code from the projects in this list other than vp-vnp itself is used. The idea of the bridge is classical (curve selection; Berkowitz 1984).
 
 ## Limits
 

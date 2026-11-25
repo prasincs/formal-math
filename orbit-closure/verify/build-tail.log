@@ -1,8 +1,10 @@
-✔ [9032/9036] Built Paper.Fields (2.0s)
-✔ [9033/9036] Built Paper.Approximate (2.2s)
-✔ [9034/9036] Built Solution (1.6s)
-ℹ [9035/9036] Built OrbitMain (1.6s)
-info: OrbitMain.lean:17:0: 'padded_permanent_not_mem' depends on axioms: [propext, Classical.choice, Quot.sound]
-info: OrbitMain.lean:18:0: 'padded_permanent_not_mem_zariski' depends on axioms: [propext, Classical.choice, Quot.sound]
-info: OrbitMain.lean:19:0: 'padded_permanent_not_mem_projective' depends on axioms: [propext, Classical.choice, Quot.sound]
-Build completed successfully (9036 jobs).
+✔ [9033/9037] Built Paper.Fields (2.1s)
+✔ [9034/9037] Built Paper.Approximate (2.3s)
+✔ [9035/9037] Built Solution (1.6s)
+ℹ [9036/9037] Built OrbitMain (1.6s)
+info: OrbitMain.lean:27:0: 'padded_permanent_not_mem' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: OrbitMain.lean:28:0: 'padded_permanent_not_mem_zariski' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: OrbitMain.lean:29:0: 'padded_permanent_not_mem_projective' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: OrbitMain.lean:30:0: 'border_det_superpolynomial' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: OrbitMain.lean:31:0: 'border_det_cubic' depends on axioms: [propext, Classical.choice, Quot.sound]
+Build completed successfully (9037 jobs).

@@ -4,7 +4,8 @@
   "theorem_names": [
     "padded_permanent_not_mem",
     "padded_permanent_not_mem_zariski",
-    "padded_permanent_not_mem_projective"
+    "padded_permanent_not_mem_projective",
+    "border_det_superpolynomial"
   ],
   "definition_names": [],
   "permitted_axioms": [

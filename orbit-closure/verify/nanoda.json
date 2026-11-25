@@ -11,6 +11,7 @@
     "PaddedPermanentNotMem",
     "PaddedPermanentNotMemZariski",
     "PaddedPermanentNotMemProjective",
+    "BorderDetSuperpolynomial",
     "PEqualNP.Gct.detPoly",
     "PEqualNP.Gct.permPoly",
     "PEqualNP.Gct.linSubst",
