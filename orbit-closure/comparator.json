@@ -1,8 +1,16 @@
 {
   "challenge_module": "OrbitChallenge",
   "solution_module": "OrbitMain",
-  "theorem_names": ["padded_permanent_not_mem"],
+  "theorem_names": [
+    "padded_permanent_not_mem",
+    "padded_permanent_not_mem_zariski",
+    "padded_permanent_not_mem_projective"
+  ],
   "definition_names": [],
-  "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
   "enable_nanoda": true
 }

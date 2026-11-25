@@ -1,10 +1,11 @@
 """Second-kernel check of one project: nanoda on an export, then tampered copies that must all be rejected.
 
-    cd <project> && lake env lean4export <Module> -- <theorem> > export     (lean4export at the tag of the project's Lean)
+    cd <project> && lake env lean4export <module> -- <theorems> > export     (lean4export at the tag of the project's Lean)
     python3 ../tools/nanoda_check.py verify/nanoda.json export /path/to/nanoda_bin
 
-`verify/nanoda.json` names the theorem, the definitions to print, and the controls [target, donor, "value" | "type"]:
-the target gets the donor's proof term or statement. A control must change what is claimed; two proofs of the same statement may be swapped freely.
+`verify/nanoda.json` names the module, the theorems, the definitions to print, and the controls [target, donor, "value" | "type"]:
+the target gets the donor's proof term or statement. A control must change what is claimed; two proofs of the same statement may be swapped freely. The donor
+must come before the target in the export, or the copy is rejected for a forward reference and tests nothing.
 """
 import json
 import pathlib
@@ -26,7 +27,7 @@ def run(path, show=()):
     return r.returncode, r.stdout, " ".join(r.stderr.split())[:160]
 
 
-rc, out, err = run(ex, [spec["theorem"], *spec["show"]])
+rc, out, err = run(ex, [*spec["theorems"], *spec["show"]])
 print(out, err)
 bad = rc != 0
 thms, names, off = [], {}, 0

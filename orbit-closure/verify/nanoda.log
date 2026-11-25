@@ -1,5 +1,9 @@
 theorem padded_permanent_not_mem : PaddedPermanentNotMem := _
 
+theorem padded_permanent_not_mem_zariski : PaddedPermanentNotMemZariski := _
+
+theorem padded_permanent_not_mem_projective : PaddedPermanentNotMemProjective := _
+
 def PaddedPermanentNotMem :
   Sort 0 :=
   forall (c : Nat),
@@ -9,6 +13,28 @@ def PaddedPermanentNotMem :
     GE.ge m m₀ → Not
       (Membership.mem
         (PEqualNP.Gct.orbitClosure (PEqualNP.Gct.detPoly Complex (HAdd.hAdd (HPow.hPow m c) (OfNat.ofNat 1))))
+        (PEqualNP.Gct.paddedPerm Complex m (HPow.hPow m c))))
+
+def PaddedPermanentNotMemZariski :
+  Sort 0 :=
+  forall (c : Nat),
+  LE.le (OfNat.ofNat 1) c → Exists
+    (fun (m₀ : Nat) =>
+    forall (m : Nat),
+    GE.ge m m₀ → Not
+      (Membership.mem
+        (PEqualNP.Gct.zariskiOrbitClosure (PEqualNP.Gct.detPoly Complex (HAdd.hAdd (HPow.hPow m c) (OfNat.ofNat 1))))
+        (PEqualNP.Gct.paddedPerm Complex m (HPow.hPow m c))))
+
+def PaddedPermanentNotMemProjective :
+  Sort 0 :=
+  forall (c : Nat),
+  LE.le (OfNat.ofNat 1) c → Exists
+    (fun (m₀ : Nat) =>
+    forall (m : Nat),
+    GE.ge m m₀ → Not
+      (Membership.mem
+        (PEqualNP.Gct.projectiveSLClosure (PEqualNP.Gct.detPoly Complex (HAdd.hAdd (HPow.hPow m c) (OfNat.ofNat 1))))
         (PEqualNP.Gct.paddedPerm Complex m (HPow.hPow m c))))
 
 def PEqualNP.Gct.detPoly (R : Type 0) :
@@ -62,21 +88,58 @@ def PEqualNP.Gct.paddedPerm (R : Type 0) :
     (HPow.hPow (MvPolynomial.X (Prod.mk (OfNat.ofNat 0) (OfNat.ofNat 0))) (HSub.hSub (HAdd.hAdd n (OfNat.ofNat 1)) m))
     (DFunLike.coe (MvPolynomial.rename (PEqualNP.Gct.padIndex m n)) (PEqualNP.Gct.permPoly R m))
 
+def PEqualNP.Gct.zariskiOrbitClosure :
+  forall {ι : Type 0} [inst._@.OrbitStatement.1597486160._hygCtx._hyg.3 : Fintype ι]
+    [inst._@.OrbitStatement.1597486160._hygCtx._hyg.6 : DecidableEq ι],
+  MvPolynomial ι Complex → Set (MvPolynomial ι Complex) :=
+  fun {ι : Type 0} [inst._@.OrbitStatement.4076191376._hygCtx._hyg.3 : Fintype ι]
+    [inst._@.OrbitStatement.4076191376._hygCtx._hyg.6 : DecidableEq ι] (f : MvPolynomial ι Complex) =>
+  Set.ofPred
+    (fun (h : MvPolynomial ι Complex) =>
+    forall (Q : MvPolynomial (Finsupp ι Nat) Complex),
+    (forall (g : Matrix.GeneralLinearGroup ι Complex),
+      Eq
+        (DFunLike.coe
+          (MvPolynomial.eval (fun (s : Finsupp ι Nat) => MvPolynomial.coeff s (PEqualNP.Gct.linSubst (Units.val g) f)))
+          Q) (OfNat.ofNat 0)) →
+    Eq (DFunLike.coe (MvPolynomial.eval (fun (s : Finsupp ι Nat) => MvPolynomial.coeff s h)) Q) (OfNat.ofNat 0))
+
+def PEqualNP.Gct.projectiveSLClosure :
+  forall {ι : Type 0} [inst._@.OrbitStatement.1597486160._hygCtx._hyg.3 : Fintype ι]
+    [inst._@.OrbitStatement.1597486160._hygCtx._hyg.6 : DecidableEq ι],
+  MvPolynomial ι Complex → Set (MvPolynomial ι Complex) :=
+  fun {ι : Type 0} [inst._@.OrbitStatement.3394481161._hygCtx._hyg.3 : Fintype ι]
+    [inst._@.OrbitStatement.3394481161._hygCtx._hyg.6 : DecidableEq ι] (f : MvPolynomial ι Complex) =>
+  Set.ofPred
+    (fun (h : MvPolynomial ι Complex) =>
+    Exists
+      (fun (g : Nat → Matrix.SpecialLinearGroup ι Complex) =>
+      Exists
+        (fun (a : Nat → Complex) =>
+        forall (s : Finsupp ι Nat),
+        Filter.Tendsto
+          (fun (k : Nat) => HMul.hMul (a k) (MvPolynomial.coeff s (PEqualNP.Gct.linSubst (Subtype.val (g k)) f)))
+          Filter.atTop (nhds (MvPolynomial.coeff s h)))))
+
 axiom propext {a b : Sort 0} : Iff a b → Eq a b
 
 axiom Quot.sound.{u} {α : Sort u} {r : α → α → Sort 0} {a b : α} : r a b → Eq (Quot.mk r a) (Quot.mk r b)
 
 axiom Classical.choice.{u} {α : Sort u} : Nonempty α → α
 
-Checked 80058 declarations with no errors
+Checked 80084 declarations with no errors
  
-REJECTED | padded_permanent_not_mem with the value of MS.approximates_of_mem | thread 'thread_1' (13) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
-REJECTED | padded_permanent_not_mem with the value of Solution.mainTheoremApprox | thread 'thread_0' (21) panicked at src/tc.rs:587:13: assertion failed: self.ctx.all_uparams_defined(
-REJECTED | padded_permanent_not_mem with the value of MS.bridge | thread 'thread_2' (32) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
-REJECTED | MS.bridge with the value of MS.approximates_of_mem | thread 'thread_7' (46) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
+REJECTED | padded_permanent_not_mem with the value of MS.approximates_of_mem | thread 'thread_4' (16) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
+REJECTED | padded_permanent_not_mem with the value of Solution.mainTheoremApprox | thread 'thread_4' (25) panicked at src/tc.rs:587:13: assertion failed: self.ctx.all_uparams_defined(
+REJECTED | padded_permanent_not_mem with the value of MS.bridge | thread 'thread_1' (31) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
+REJECTED | MS.bridge with the value of MS.approximates_of_mem | thread 'thread_0' (39) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
 REJECTED | MS.approximates_of_mem with the value of MS.arc_of_orbit | thread 'thread_0' (48) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
-REJECTED | MS.arc with the value of MS.conj | thread 'thread_1' (58) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
+REJECTED | MS.arc with the value of MS.conj | thread 'thread_3' (60) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
 REJECTED | MS.conj with the value of MS.extend | thread 'thread_1' (67) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
-REJECTED | MS.cost_det with the value of MS.cost_cp | thread 'thread_4' (79) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
-REJECTED | padded_permanent_not_mem with the type of Solution.mainTheoremApprox | thread 'thread_0' (84) panicked at src/tc.rs:207:11: assertion failed: used_levels.is_subset(&declar
+REJECTED | MS.cost_det with the value of MS.cost_cp | thread 'thread_5' (80) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
+REJECTED | padded_permanent_not_mem with the type of Solution.mainTheoremApprox | thread 'thread_7' (91) panicked at src/tc.rs:207:11: assertion failed: used_levels.is_subset(&declar
+REJECTED | padded_permanent_not_mem_zariski with the value of padded_permanent_not_mem | thread 'thread_0' (93) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
+REJECTED | padded_permanent_not_mem_projective with the value of padded_permanent_not_mem | thread 'thread_2' (104) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run 
+REJECTED | padded_permanent_not_mem_projective with the value of padded_permanent_not_mem_zariski | thread 'thread_2' (113) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run 
+REJECTED | MS.arc_of_zariski with the value of MS.zariski_hom | thread 'thread_2' (122) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run 
 RESULT accepted, all controls rejected

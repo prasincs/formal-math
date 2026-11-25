@@ -1,15 +1,88 @@
 {
-  "theorem": "padded_permanent_not_mem",
-  "show": ["PaddedPermanentNotMem", "PEqualNP.Gct.detPoly", "PEqualNP.Gct.permPoly", "PEqualNP.Gct.linSubst", "PEqualNP.Gct.orbitClosure", "PEqualNP.Gct.padIndex", "PEqualNP.Gct.paddedPerm"],
+  "module": "OrbitMain",
+  "theorems": [
+    "padded_permanent_not_mem",
+    "padded_permanent_not_mem_zariski",
+    "padded_permanent_not_mem_projective"
+  ],
+  "show": [
+    "PaddedPermanentNotMem",
+    "PaddedPermanentNotMemZariski",
+    "PaddedPermanentNotMemProjective",
+    "PEqualNP.Gct.detPoly",
+    "PEqualNP.Gct.permPoly",
+    "PEqualNP.Gct.linSubst",
+    "PEqualNP.Gct.orbitClosure",
+    "PEqualNP.Gct.padIndex",
+    "PEqualNP.Gct.paddedPerm",
+    "PEqualNP.Gct.zariskiOrbitClosure",
+    "PEqualNP.Gct.projectiveSLClosure"
+  ],
   "controls": [
-    ["padded_permanent_not_mem", "MS.approximates_of_mem", "value"],
-    ["padded_permanent_not_mem", "Solution.mainTheoremApprox", "value"],
-    ["padded_permanent_not_mem", "MS.bridge", "value"],
-    ["MS.bridge", "MS.approximates_of_mem", "value"],
-    ["MS.approximates_of_mem", "MS.arc_of_orbit", "value"],
-    ["MS.arc", "MS.conj", "value"],
-    ["MS.conj", "MS.extend", "value"],
-    ["MS.cost_det", "MS.cost_cp", "value"],
-    ["padded_permanent_not_mem", "Solution.mainTheoremApprox", "type"]
+    [
+      "padded_permanent_not_mem",
+      "MS.approximates_of_mem",
+      "value"
+    ],
+    [
+      "padded_permanent_not_mem",
+      "Solution.mainTheoremApprox",
+      "value"
+    ],
+    [
+      "padded_permanent_not_mem",
+      "MS.bridge",
+      "value"
+    ],
+    [
+      "MS.bridge",
+      "MS.approximates_of_mem",
+      "value"
+    ],
+    [
+      "MS.approximates_of_mem",
+      "MS.arc_of_orbit",
+      "value"
+    ],
+    [
+      "MS.arc",
+      "MS.conj",
+      "value"
+    ],
+    [
+      "MS.conj",
+      "MS.extend",
+      "value"
+    ],
+    [
+      "MS.cost_det",
+      "MS.cost_cp",
+      "value"
+    ],
+    [
+      "padded_permanent_not_mem",
+      "Solution.mainTheoremApprox",
+      "type"
+    ],
+    [
+      "padded_permanent_not_mem_zariski",
+      "padded_permanent_not_mem",
+      "value"
+    ],
+    [
+      "padded_permanent_not_mem_projective",
+      "padded_permanent_not_mem",
+      "value"
+    ],
+    [
+      "padded_permanent_not_mem_projective",
+      "padded_permanent_not_mem_zariski",
+      "value"
+    ],
+    [
+      "MS.arc_of_zariski",
+      "MS.zariski_hom",
+      "value"
+    ]
   ]
 }

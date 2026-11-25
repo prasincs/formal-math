@@ -7,6 +7,8 @@ Written by Claude (Anthropic's AI system, in Claude Code) at the request of the 
 12:52 plan in seven pieces; power-series step proved. 13:04–13:16 vp-vnp rebuilt offline and checked with a second kernel. 13:11 limit step. 14:04 arc lemma. 14:11 determinant circuit. 14:17 the final theorem compiled. 14:22 second kernel, controls.
 14:34 a search for earlier work, done only then, found the projects named in the README; Remark N.6 in its Laurent-series form had been formalized by others within the previous day.
 
+15:00 the owner pointed to Regan's 2002 survey; comparing its definitions with ours led to the Zariski and the projective form, added the same hour.
+
 **Where the ideas come from.** The lower bound and the statement that it implies the orbit-closure form: the authors of vp-vnp (and, independently, OpenAI's paper). Curve selection and Berkowitz's algorithm: textbook. Ours: doing the arc over a
 large field of characteristic zero instead of ℂ (a generic line through the image point, Galois conjugation to hit the right point, Zariski's lemma for the rest of the parameters, then a Dedekind localization), and the Lean text.
 

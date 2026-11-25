@@ -1325,10 +1325,14 @@ theorem arc_of_orbit {ι : Type} [Fintype ι] [DecidableEq ι] (f : MvPolynomial
 
 set_option maxHeartbeats 1000000 in
 /-- Membership in the orbit closure gives an approximating circuit of polynomial size over some field of characteristic zero. -/
-theorem approximates_of_mem {m n : ℕ} (hmn : m ≤ n) (hmem : paddedPerm ℂ m n ∈ orbitClosure (detPoly ℂ (n + 1))) :
+theorem approximates_of_arc {m n : ℕ} (hmn : m ≤ n)
+    (harc : ∃ (k : Type) (_ : Field k) (_ : CharZero k) (γ : Matrix (Fin (n + 1) × Fin (n + 1)) (Fin (n + 1) × Fin (n + 1)) (LaurentSeries k))
+      (j : ℂ →+* LaurentSeries k) (Q' : MvPolynomial (Fin (n + 1) × Fin (n + 1)) (PowerSeries k)),
+      map (HahnSeries.ofPowerSeries ℤ k) Q' = linSubst γ (map j (detPoly ℂ (n + 1))) ∧
+        map (PowerSeries.constantCoeff (R := k)) Q' = map (Int.castRingHom k) (paddedPerm ℤ m n)) :
     ∃ (k : Type) (_ : Field k) (_ : CharZero k), Statement.Approximates (Statement.perm k m) (49 * (n + 1) ^ 4) := by
   classical
-  obtain ⟨k, ik, ck, γ, j, Q', hQ1, hQ2⟩ := arc_of_orbit (detPoly ℂ (n + 1)) (paddedPerm ℤ m n) (by rw [padded_map]; exact hmem)
+  obtain ⟨k, ik, ck, γ, j, Q', hQ1, hQ2⟩ := harc
   rw [padded_map] at hQ2
   refine ⟨k, ik, ck, ?_⟩
   let q' : MvPolynomial (Fin m × Fin m) (PowerSeries k) := aeval (unpad _ m n) Q'
@@ -1420,17 +1424,22 @@ theorem approximates_of_mem {m n : ℕ} (hmn : m ≤ n) (hmem : paddedPerm ℂ m
     · rw [if_neg (lt_irrefl _), if_pos rfl, ← hq2, coeff_map]
       simp
 
-/-- For each exponent, large padded permanents are outside the orbit closure, given the bound for approximating circuits. -/
-theorem bridge (h : Statement.MainTheoremApprox.{0}) (c : ℕ) (hc : 1 ≤ c) :
-    ∃ m₀ : ℕ, ∀ m ≥ m₀, paddedPerm ℂ m (m ^ c) ∉ orbitClosure (detPoly ℂ (m ^ c + 1)) := by
+theorem approximates_of_mem {m n : ℕ} (hmn : m ≤ n) (hmem : paddedPerm ℂ m n ∈ orbitClosure (detPoly ℂ (n + 1))) :
+    ∃ (k : Type) (_ : Field k) (_ : CharZero k), Statement.Approximates (Statement.perm k m) (49 * (n + 1) ^ 4) :=
+  approximates_of_arc hmn (arc_of_orbit (detPoly ℂ (n + 1)) (paddedPerm ℤ m n) (by rw [padded_map]; exact hmem))
+
+/-- The numerical step: for large `m` no field of characteristic zero has circuits of that size. -/
+theorem numerics (h : Statement.MainTheoremApprox.{0}) (c : ℕ) (hc : 1 ≤ c) :
+    ∃ m₀ : ℕ, ∀ m ≥ m₀, m ≤ m ^ c ∧
+      ¬ ∃ (k : Type) (_ : Field k) (_ : CharZero k), Statement.Approximates (Statement.perm k m) (49 * (m ^ c + 1) ^ 4) := by
   obtain ⟨c', hc', h⟩ := h
   obtain ⟨m₁, h⟩ := h 0
   obtain ⟨t, ht⟩ := exists_nat_gt (((4 * c + 10 : ℕ) / c' : ℝ) ^ (3 : ℕ))
-  refine ⟨max m₁ (2 ^ (t + 1)), fun m hm hmem => ?_⟩
+  refine ⟨max m₁ (2 ^ (t + 1)), fun m hm => ⟨Nat.le_self_pow (by omega) m, fun hex => ?_⟩⟩
   have hm1 : m₁ ≤ m := le_trans (le_max_left _ _) hm
   have hm2 : 2 ^ (t + 1) ≤ m := le_trans (le_max_right _ _) hm
   have h2m : 2 ≤ m := le_trans (by rw [pow_succ]; have := Nat.one_le_two_pow (n := t); omega) hm2
-  obtain ⟨k, _, _, happ⟩ := approximates_of_mem (Nat.le_self_pow (by omega) m) hmem
+  obtain ⟨k, _, _, happ⟩ := hex
   have hb : Statement.Beyond c' m (49 * (m ^ c + 1) ^ 4) := (h k m hm1 _).2 (by norm_num) happ
   unfold Statement.Beyond at hb
   have hs : 49 * (m ^ c + 1) ^ 4 ≤ m ^ (4 * c + 10) := by
@@ -1459,6 +1468,12 @@ theorem bridge (h : Statement.MainTheoremApprox.{0}) (c : ℕ) (hc : 1 ≤ c) :
       _ = (m : ℝ) ^ ((4 * c + 10 : ℕ) : ℝ) := by rw [Real.rpow_natCast]; push_cast; rfl
       _ ≤ _ := Real.rpow_le_rpow_of_exponent_le hm0 hexp
   exact absurd hb (not_lt.2 hle)
+
+/-- For each exponent, large padded permanents are outside the orbit closure, given the bound for approximating circuits. -/
+theorem bridge (h : Statement.MainTheoremApprox.{0}) (c : ℕ) (hc : 1 ≤ c) :
+    ∃ m₀ : ℕ, ∀ m ≥ m₀, paddedPerm ℂ m (m ^ c) ∉ orbitClosure (detPoly ℂ (m ^ c + 1)) := by
+  obtain ⟨m₀, h0⟩ := numerics h c hc
+  exact ⟨m₀, fun m hm hmem => (h0 m hm).2 (approximates_of_mem (h0 m hm).1 hmem)⟩
 
 end Final
 

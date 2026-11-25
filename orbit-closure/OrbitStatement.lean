@@ -70,3 +70,32 @@ size `m ^ c + 1` (the polynomial-size form of the Mulmuley–Sohoni conjecture o
 def PaddedPermanentNotMem : Prop :=
   ∀ c : ℕ, 1 ≤ c → ∃ m₀ : ℕ, ∀ m ≥ m₀,
     PEqualNP.Gct.paddedPerm ℂ m (m ^ c) ∉ PEqualNP.Gct.orbitClosure (PEqualNP.Gct.detPoly ℂ (m ^ c + 1))
+
+namespace PEqualNP.Gct
+
+open MvPolynomial
+
+/-- The Zariski closure of the orbit: the polynomials at which every polynomial in the coefficients that vanishes on the orbit
+vanishes too. It contains `orbitClosure f` (`MS.orbitClosure_subset_zariski`). -/
+def zariskiOrbitClosure {ι : Type} [Fintype ι] [DecidableEq ι] (f : MvPolynomial ι ℂ) : Set (MvPolynomial ι ℂ) :=
+  {h | ∀ Q : MvPolynomial (ι →₀ ℕ) ℂ,
+    (∀ g : Matrix.GeneralLinearGroup ι ℂ, eval (fun s => (linSubst (g : Matrix ι ι ℂ) f).coeff s) Q = 0) →
+      eval (fun s => h.coeff s) Q = 0}
+
+/-- The projective form: `h` is a coefficientwise limit of scalar multiples of `x ↦ f (g_k x)` with `det g_k = 1`. For `h ≠ 0` this says
+that the point `[h]` is a limit of points of the `SL`-orbit of `[f]` in projective space. -/
+def projectiveSLClosure {ι : Type} [Fintype ι] [DecidableEq ι] (f : MvPolynomial ι ℂ) : Set (MvPolynomial ι ℂ) :=
+  {h | ∃ (g : ℕ → Matrix.SpecialLinearGroup ι ℂ) (a : ℕ → ℂ),
+    ∀ s, Filter.Tendsto (fun k => a k * (linSubst (g k : Matrix ι ι ℂ) f).coeff s) Filter.atTop (nhds (h.coeff s))}
+
+end PEqualNP.Gct
+
+/-- The same statement for the Zariski closure (stronger). -/
+def PaddedPermanentNotMemZariski : Prop :=
+  ∀ c : ℕ, 1 ≤ c → ∃ m₀ : ℕ, ∀ m ≥ m₀,
+    PEqualNP.Gct.paddedPerm ℂ m (m ^ c) ∉ PEqualNP.Gct.zariskiOrbitClosure (PEqualNP.Gct.detPoly ℂ (m ^ c + 1))
+
+/-- The same statement for limits of the `SL`-orbit in projective space. -/
+def PaddedPermanentNotMemProjective : Prop :=
+  ∀ c : ℕ, 1 ≤ c → ∃ m₀ : ℕ, ∀ m ≥ m₀,
+    PEqualNP.Gct.paddedPerm ℂ m (m ^ c) ∉ PEqualNP.Gct.projectiveSLClosure (PEqualNP.Gct.detPoly ℂ (m ^ c + 1))
