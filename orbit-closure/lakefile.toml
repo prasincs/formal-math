@@ -1,5 +1,5 @@
 name = "orbit-closure"
-defaultTargets = ["OrbitStatement", "Bridge", "Variants", "OrbitMain"]
+defaultTargets = ["OrbitStatement", "Bridge", "Variants", "BorderDet", "OrbitMain"]
 
 [leanOptions]
 autoImplicit = false
@@ -18,6 +18,9 @@ name = "Bridge"
 
 [[lean_lib]]
 name = "Variants"
+
+[[lean_lib]]
+name = "BorderDet"
 
 [[lean_lib]]
 name = "OrbitMain"

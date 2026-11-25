@@ -3,7 +3,9 @@
   "theorems": [
     "padded_permanent_not_mem",
     "padded_permanent_not_mem_zariski",
-    "padded_permanent_not_mem_projective"
+    "padded_permanent_not_mem_projective",
+    "border_det_superpolynomial",
+    "border_det_cubic"
   ],
   "show": [
     "PaddedPermanentNotMem",
@@ -16,7 +18,9 @@
     "PEqualNP.Gct.padIndex",
     "PEqualNP.Gct.paddedPerm",
     "PEqualNP.Gct.zariskiOrbitClosure",
-    "PEqualNP.Gct.projectiveSLClosure"
+    "PEqualNP.Gct.projectiveSLClosure",
+    "PEqualNP.Gct.HasDetExpression",
+    "PEqualNP.Gct.HasBorderDetExpression"
   ],
   "controls": [
     [
@@ -82,6 +86,16 @@
     [
       "MS.arc_of_zariski",
       "MS.zariski_hom",
+      "value"
+    ],
+    [
+      "border_det_superpolynomial",
+      "padded_permanent_not_mem_zariski",
+      "value"
+    ],
+    [
+      "MS.bridge_border",
+      "MS.numerics",
       "value"
     ]
   ]
