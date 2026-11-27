@@ -1,0 +1,6 @@
+The paper (single-level-gap.tex, the figure sources in figures/ and the PDF built from them) is
+Copyright 2026 Prasanna Gautam, licensed under the Creative Commons Attribution 4.0 International
+License (CC BY 4.0): https://creativecommons.org/licenses/by/4.0/legalcode
+
+The data files figures/gap-t*.dat are output of the normgap program and are covered by the same license.
+The normgap program (../normgap) is licensed under the Apache License 2.0 (../../LICENSE).

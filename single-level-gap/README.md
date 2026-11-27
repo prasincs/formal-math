@@ -22,7 +22,7 @@ the edge function `satf`, monotone formulas and their leaf count (`Fm`, `Rep`), 
 (*Disproving the single level conjecture*, SIAM J. Comput. 36(1), 2006, Lemma 3.13). The graph `a c = b + d` is the sum-product graph (Jukna, *Boolean Function Complexity*, 2012, Example 7.5).
 The upper bound replaces address bits by ORs of variables, Jukna's method in the same paper. What is ours: the observation that these together give an explicit graph, which Jukna asked for as Problem 22
 of the original ECCC version of his paper (TR05-021, February 2005), and the Lean text. A paper with the general form (norm graphs, gap `n^(1 - 1/t - o(1))` for every fixed `t`, proved by hand, not in Lean)
-is in preparation.
+is in [paper/](paper/); see below.
 
 ## Earlier work
 
@@ -44,3 +44,13 @@ Revision 2 and the journal version, without comment. Not read: Revision 1 (downl
 
 `SLGapMain.lean` prints the axioms of both theorems: `propext`, `Classical.choice`, `Quot.sound`. Second kernel: nanoda checked the export of both theorems (33,273 declarations) and rejected
 all 10 tampered copies in `verify/nanoda.json`, each of which changes what is claimed; see `verify/nanoda.log`. How it was made: [PROCESS.md](PROCESS.md).
+
+## The paper
+
+[paper/single-level-gap.tex](paper/single-level-gap.tex) (draft, open items marked TODO): *An explicit polynomial gap between single-level and general monotone circuits*,
+by Prasanna Gautam. For every fixed `t ≥ 2`, bipartite norm graphs with a clique on each side give `C₁(f_G)/C(f_G) = n^(1 - 1/t - o(1))`, also against monotone formulas;
+the case `t = 2` is the Lean theorem above. Appendix A says what AI assistants did and how their output was checked.
+
+The workflow `.github/workflows/single-level-gap-paper.yml` builds [normgap/](normgap/) (Rust, no dependencies), checks its adjacency circuit against field arithmetic
+on small fields, regenerates the data of Figure 4 and fails if it differs from `paper/figures/gap-t*.dat`, then compiles the PDF; download it from the workflow run, or from a
+release for tags `single-level-gap-v*`. The paper and its figures are under CC BY 4.0 ([paper/LICENSE](paper/LICENSE)); everything else here is under Apache 2.0.

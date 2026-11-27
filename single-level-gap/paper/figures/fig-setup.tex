@@ -1,0 +1,62 @@
+% Figure 1: the graph G = H + K_X + K_Y (left) and the shape of a single-level circuit (right).
+\begin{tikzpicture}[
+  vtx/.style={circle,fill=black,inner sep=1.3pt},
+  gate/.style={circle,draw,inner sep=0pt,minimum size=5.5mm,font=\small},
+  inp/.style={font=\small,inner sep=1pt},
+  wire/.style={-{Stealth[length=1.6mm]}},
+  >=Stealth]
+  % ---- left: the graph ----
+  \draw[gray!70] (0,0) ellipse (0.75 and 1.75);
+  \draw[gray!70] (3,0) ellipse (0.75 and 1.75);
+  \node at (0,2.1) {$X$};
+  \node at (3,2.1) {$Y$};
+  \foreach \i/\y in {1/1.1,2/0.37,3/-0.37,4/-1.1} {
+    \node[vtx] (x\i) at (0,\y) {};
+    \node[vtx] (y\i) at (3,\y) {};
+  }
+  % cliques (drawn faintly)
+  \foreach \pa/\pb in {1/2,2/3,3/4} {
+    \draw[gray!60] (x\pa) -- (x\pb);
+    \draw[gray!60] (y\pa) -- (y\pb);
+  }
+  \foreach \pa/\pb in {1/3,2/4} {
+    \draw[gray!60] (x\pa) to[bend right=40] (x\pb);
+    \draw[gray!60] (y\pa) to[bend left=40] (y\pb);
+  }
+  \draw[gray!60] (x1) to[bend right=55] (x4);
+  \draw[gray!60] (y1) to[bend left=55] (y4);
+  \node[gray,font=\small] at (-1.15,0) {$K_X$};
+  \node[gray,font=\small] at (4.15,0) {$K_Y$};
+  % bipartite part H
+  \foreach \pa/\pb in {1/1,1/2,2/1,2/3,3/2,3/4,4/3,4/4} {
+    \draw[thick] (x\pa) -- (y\pb);
+  }
+  \node[font=\small] at (1.5,-2.15) {$H$: no $t$ vertices of $X$ with $s$ common neighbours};
+
+  % ---- right: a single-level circuit ----
+  \begin{scope}[xshift=7cm,yshift=-1.9cm]
+    \foreach \i in {1,...,6} {
+      \node[inp] (v\i) at ({(\i-1)*0.75},0) {$x_{\i}$};
+    }
+    \node[gate] (o1) at (0.0,1.2) {$\vee$};
+    \node[gate] (o2) at (1.25,1.2) {$\vee$};
+    \node[gate] (o3) at (2.5,1.2) {$\vee$};
+    \node[gate] (o4) at (3.75,1.2) {$\vee$};
+    \foreach \pp/\qq in {1/o1,2/o1,3/o1,2/o2,4/o2,3/o3,5/o3,4/o4,5/o4,6/o4} {
+      \draw[wire] (v\pp) -- (\qq);
+    }
+    \node[gate] (a1) at (0.6,2.45) {$\wedge$};
+    \node[gate] (a2) at (3.1,2.45) {$\wedge$};
+    \draw[wire] (o1) -- (a1); \draw[wire] (o2) -- (a1);
+    \draw[wire] (o3) -- (a2); \draw[wire] (o4) -- (a2);
+    \node[gate] (out) at (1.85,3.6) {$\vee$};
+    \draw[wire] (a1) -- (out); \draw[wire] (a2) -- (out);
+    \draw[wire] (out) -- ++(0,0.65) node[above,font=\small] {$f_G$};
+    \draw[decorate,decoration={brace,amplitude=4pt}] (4.45,0.95) -- (4.45,-0.1)
+      node[midway,right=5pt,font=\footnotesize,align=left] {ORs of\\variables};
+    \draw[decorate,decoration={brace,amplitude=4pt}] (4.45,2.75) -- (4.45,2.15)
+      node[midway,right=5pt,font=\footnotesize,align=left] {one AND\\level};
+    \draw[decorate,decoration={brace,amplitude=4pt}] (4.45,4.0) -- (4.45,3.3)
+      node[midway,right=5pt,font=\footnotesize] {ORs};
+  \end{scope}
+\end{tikzpicture}

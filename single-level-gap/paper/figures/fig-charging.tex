@@ -1,0 +1,39 @@
+% Figure 2: the charging step of Lemma 2, case b >= s.
+\begin{tikzpicture}[
+  gate/.style={circle,draw,inner sep=0pt,minimum size=5.5mm,font=\small},
+  pt/.style={circle,fill=black,inner sep=1.2pt},
+  wire/.style={-{Stealth[length=1.6mm]}},
+  note/.style={font=\footnotesize,align=left}]
+  % the AND gate and its two AND-free operand cones
+  \node[gate] (g) at (0,4.1) {$\wedge$};
+  \node[left=1pt of g,font=\small] {$g$};
+  \draw[wire] (g) -- ++(0,0.75) node[above,font=\footnotesize] {only ORs above $g$};
+  \coordinate (aA) at (-1.6,3.0);
+  \coordinate (aB) at (1.6,3.0);
+  \fill[gray!10] (aA) -- (-3.2,0) -- (-0.15,0) -- cycle;
+  \fill[gray!10] (aB) -- (0.15,0) -- (3.2,0) -- cycle;
+  \draw (aA) -- (-3.2,0) -- (-0.15,0) -- cycle;
+  \draw (aB) -- (0.15,0) -- (3.2,0) -- cycle;
+  \draw[wire] (aA) -- (g);
+  \draw[wire] (aB) -- (g);
+  \node[note,anchor=east] at (-2.45,2.6) {AND-free cone,\\letters $A\ni u$,\\$|A\cap X|=a\le t-1$};
+  \node[note,anchor=west] at (2.45,2.6) {AND-free cone,\\letters $B\ni v$,\\$|B\cap Y|=b\ge s$};
+  % inputs
+  \node[pt,label={below:{\small $x_u$}}] (xu) at (-1.4,0) {};
+  \node[pt,label={below:{\small $x_v$}}] (xv) at (1.25,0) {};
+  % walk from x_v to the operand
+  \node[pt] (o) at (1.45,0.95) {};
+  \node[gate,fill=white] (h) at (1.6,1.85) {$\vee$};
+  \draw[very thick] (xv) -- (o);
+  \draw[very thick,wire] (o) -- (h);
+  \draw[very thick,dashed] (h) -- (aB);
+  \draw[wire] (2.45,0.75) -- (h);
+  \node[note,anchor=north west] at (3.35,0.95) {$o$: at most $s-1$ letters in $Y$};
+  \node[note,anchor=south west] at (3.35,1.15) {$h$: first wire on the walk\\\phantom{$h$: }with $\ge s$ letters in $Y$};
+  \draw[gray] (3.35,0.85) -- (1.55,0.95);
+  \draw[gray] (3.35,1.5) -- (1.9,1.85);
+  % the count
+  \node[note,anchor=north,align=center,text width=12cm] at (0,-0.65) {%
+    Charge $uv$ to the code $(h,\ \text{side of } o,\ 0)$. Given the code: $u$ is a common neighbour of $s$ fixed
+    $Y$-letters of $h$ (at most $t-1$ choices) and $v\in S(o)\cap Y$ (at most $s-1$ choices).};
+\end{tikzpicture}
