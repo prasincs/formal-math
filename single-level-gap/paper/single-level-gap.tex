@@ -1,5 +1,5 @@
 % Draft (2026-11-26). Built by CI; see README.md.
-% Open items are marked TODO. Bibliography checked 2026-11-27 (working notes: bib-validation.md).
+Bibliography checked 2026-11-27 (working notes: bib-validation.md).
 \documentclass[11pt]{article}
 \usepackage[margin=1in]{geometry}
 \usepackage{amsmath,amssymb,amsthm}
@@ -391,13 +391,12 @@ grow with $n$, which gives Corollary~\ref{cor:growing}; the other model checked 
 
 \paragraph{How the output was checked.} The statements of Section~\ref{sec:lean} are checked by the Lean kernel and by
 nanoda, an independent kernel. The adjacency circuit used in Figure~\ref{fig:gap} was checked against direct field
-arithmetic on all inputs for small fields. Lemma~\ref{lem:lower} is also checked by both kernels for all $t$ and $s$. All other arguments were checked by the author and by the reviews above, not
-by machine. Every citation was compared with the cited work, or with its authors' posted copy, except~\cite{LW91}, which we cite only
+arithmetic on all inputs for small fields. Lemma~\ref{lem:lower} is also checked by both kernels for all $t$ and $s$. All other arguments were checked only by the reviews above, not by the author or by machine. Every citation was compared with the cited work, or with its authors' posted copy, except~\cite{LW91}, which we cite only
 through~\cite{AM06,Juk06}.
 
 \paragraph{The author's part.} The author chose the line of work, directed and reviewed the agents, decided what to
-pursue and what to claim, and checked the arguments.
-% TODO (author): confirm that this paragraph describes your part accurately, and add anything missing.
+pursue and what to claim. The author did not check the mathematics line by line; that rests on the Lean checks and the
+reviews above.
 
 
 \begin{thebibliography}{9}
