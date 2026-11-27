@@ -5,14 +5,14 @@
   wire/.style={-{Stealth[length=1.6mm]}},
   note/.style={font=\footnotesize,align=left}]
   % variables
-  \node[blk,minimum width=4.6cm] (VX) at (-2.6,0) {$x_u$,\ $u\in X\cong\{0,1\}^m$\quad($N$ variables)};
-  \node[blk,minimum width=4.6cm] (VY) at (2.6,0) {$x_v$,\ $v\in Y\cong\{0,1\}^m$\quad($N$ variables)};
+  \node[blk,minimum width=4.6cm] (VX) at (-2.6,0) {$x_u$,\ $u\in X\cong\{0,1\}^m$\\{\footnotesize $N$ variables}};
+  \node[blk,minimum width=4.6cm] (VY) at (2.6,0) {$x_v$,\ $v\in Y\cong\{0,1\}^m$\\{\footnotesize $N$ variables}};
   % address sums
-  \node[blk,minimum width=4.6cm] (SX) at (-2.6,1.45) {$s^{e}_{X,j}=\bigvee\{x_u : u_j=e\}$\\ $j\le m,\ e\in\{0,1\}$};
-  \node[blk,minimum width=4.6cm] (SY) at (2.6,1.45) {$s^{e}_{Y,j}=\bigvee\{x_v : v_j=e\}$\\ $j\le m,\ e\in\{0,1\}$};
+  \node[blk,minimum width=4.6cm] (SX) at (-2.6,1.6) {$s^{e}_{X,j}=\bigvee\{x_u : u_j=e\}$\\ $j\le m,\ e\in\{0,1\}$};
+  \node[blk,minimum width=4.6cm] (SY) at (2.6,1.6) {$s^{e}_{Y,j}=\bigvee\{x_v : v_j=e\}$\\ $j\le m,\ e\in\{0,1\}$};
   \draw[wire] (VX) -- (SX);
   \draw[wire] (VY) -- (SY);
-  \node[note,anchor=east] at (-5.0,0.72) {$4m$ ORs of $N/2$ variables:\\$\approx 2mN$ gates};
+  \node[note,anchor=east] at (-5.0,0.8) {$4m$ ORs of $N/2$ variables:\\$\approx 2mN$ gates};
   % middle layer
   \node[blk] (T2X) at (-4.3,3.2) {$T_2(X)=\bigvee_j s^0_{X,j}\wedge s^1_{X,j}$\\[1pt]{\footnotesize two ones in $X$}};
   \node[blk] (T2Y) at (4.3,3.2) {$T_2(Y)=\bigvee_j s^0_{Y,j}\wedge s^1_{Y,j}$\\[1pt]{\footnotesize two ones in $Y$}};
