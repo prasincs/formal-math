@@ -1,0 +1,40 @@
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: SLGapProof.lean:377:0: automatically included section variable(s) unused in theorem `SingleLevelGap.Hr_c4`:
+  [Fintype F]
+  [Algebra (ZMod 2) F]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype F] [Algebra (ZMod 2) F] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: SLGapProof.lean:403:0: automatically included section variable(s) unused in theorem `SingleLevelGap.ad_ex`:
+  [Fintype F]
+  [DecidableEq F]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype F] [DecidableEq F] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: SLGapProof.lean:408:0: automatically included section variable(s) unused in theorem `SingleLevelGap.ad_inj`:
+  [Fintype F]
+  [DecidableEq F]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype F] [DecidableEq F] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: SLGapProof.lean:471:0: automatically included section variable(s) unused in theorem `SingleLevelGap.coord`:
+  [Fintype F]
+  [DecidableEq F]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype F] [DecidableEq F] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [18259/18261] Built SLGapMain (2.2s)
+warning: SLGapMain.lean:7:53: Variable name `m` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _m
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+info: SLGapMain.lean:12:0: 'single_level_lower' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: SLGapMain.lean:13:0: 'single_level_gap' depends on axioms: [propext, Classical.choice, Quot.sound]
+Build completed successfully (18261 jobs).

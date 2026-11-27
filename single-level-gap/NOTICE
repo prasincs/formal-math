@@ -1,0 +1,6 @@
+single-level-gap: an explicit gap for single-level monotone circuits
+Copyright 2026 GitHub user prasincs
+
+Licensed under the Apache License, Version 2.0 (see ../LICENSE).
+
+The proof uses, and does not include, mathlib4 with its standard dependencies, fetched by the build tool at the revisions in lake-manifest.json.

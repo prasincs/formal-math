@@ -1,0 +1,15 @@
+{
+  "challenge_module": "SLGapChallenge",
+  "solution_module": "SLGapMain",
+  "theorem_names": [
+    "single_level_lower",
+    "single_level_gap"
+  ],
+  "definition_names": [],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

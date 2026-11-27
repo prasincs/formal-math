@@ -1,0 +1,23 @@
+name = "single-level-gap"
+defaultTargets = ["SLGapStatement", "SLGapProof", "SLGapMain"]
+
+[leanOptions]
+autoImplicit = false
+
+# Mathlib at its v4.36.0 release commit; the Lean version in lean-toolchain is the one that commit names.
+[[require]]
+name = "mathlib"
+git = "https://github.com/leanprover-community/mathlib4"
+rev = "fc4f59e577feb1a4956671bc04ac18aaaf8cd842"
+
+[[lean_lib]]
+name = "SLGapStatement"
+
+[[lean_lib]]
+name = "SLGapProof"
+
+[[lean_lib]]
+name = "SLGapMain"
+
+[[lean_lib]]
+name = "SLGapChallenge"

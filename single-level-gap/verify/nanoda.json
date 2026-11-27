@@ -1,0 +1,74 @@
+{
+  "module": "SLGapMain",
+  "theorems": [
+    "single_level_lower",
+    "single_level_gap"
+  ],
+  "show": [
+    "SingleLevelLower",
+    "SingleLevelGap",
+    "SingleLevelGap.Wire",
+    "SingleLevelGap.Circ",
+    "SingleLevelGap.Circ.val",
+    "SingleLevelGap.Circ.andFree",
+    "SingleLevelGap.Circ.single",
+    "SingleLevelGap.satf",
+    "SingleLevelGap.Fm",
+    "SingleLevelGap.Fm.eval",
+    "SingleLevelGap.Fm.leaves",
+    "SingleLevelGap.Rep",
+    "SingleLevelGap.Hr"
+  ],
+  "controls": [
+    [
+      "single_level_gap",
+      "single_level_lower",
+      "value"
+    ],
+    [
+      "single_level_gap",
+      "single_level_lower",
+      "type"
+    ],
+    [
+      "single_level_gap",
+      "SingleLevelGap.upper",
+      "value"
+    ],
+    [
+      "single_level_lower",
+      "SingleLevelGap.R_inj",
+      "value"
+    ],
+    [
+      "SingleLevelGap.gap",
+      "SingleLevelGap.card_Hr",
+      "value"
+    ],
+    [
+      "SingleLevelGap.upper",
+      "SingleLevelGap.two_side",
+      "value"
+    ],
+    [
+      "SingleLevelGap.lower",
+      "SingleLevelGap.code",
+      "value"
+    ],
+    [
+      "SingleLevelGap.Hr_c4",
+      "SingleLevelGap.upper",
+      "value"
+    ],
+    [
+      "SingleLevelGap.R_inj",
+      "SingleLevelGap.meet",
+      "value"
+    ],
+    [
+      "SingleLevelGap.card_Hr",
+      "SingleLevelGap.Hr_c4",
+      "value"
+    ]
+  ]
+}

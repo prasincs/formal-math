@@ -1,0 +1,269 @@
+theorem single_level_lower : SingleLevelLower := _
+
+theorem single_level_gap : SingleLevelGap := _
+
+def SingleLevelLower :
+  Sort 0 :=
+  forall {X Y : Type 0} [inst._@.SLGapStatement.1615210905._hygCtx._hyg.7 : DecidableEq X]
+    [inst._@.SLGapStatement.1615210905._hygCtx._hyg.10 : DecidableEq Y]
+    [inst._@.SLGapStatement.1615210905._hygCtx._hyg.13 : Fintype X]
+    [inst._@.SLGapStatement.1615210905._hygCtx._hyg.16 : Fintype Y] (m : Nat) (C : SingleLevelGap.Circ X Y m)
+    (H : X → Y → Sort 0)
+    [inst._@.SLGapStatement.1615210905._hygCtx._hyg.31 :
+      DecidablePred (fun (p : Prod X Y) => H (Prod.fst p) (Prod.snd p))],
+  (forall (a a' : X) (b b' : Y), H a b → H a b' → H a' b → H a' b' → Or (Eq a a') (Eq b b')) →
+  SingleLevelGap.Circ.single C → (forall (x : Sum X Y → Bool),
+    Iff (Eq (SingleLevelGap.Circ.val C x (SingleLevelGap.Circ.out C)) Bool.true) (SingleLevelGap.satf H x)) →
+  LE.le (Finset.card (Finset.filter (fun (p : Prod X Y) => H (Prod.fst p) (Prod.snd p)) Finset.univ))
+    (HMul.hMul (OfNat.ofNat 4) m)
+
+def SingleLevelGap :
+  Sort 0 :=
+  forall (k : Nat),
+  LT.lt (OfNat.ofNat 0) k → And
+    (SingleLevelGap.Rep
+      (HMul.hMul (HPow.hPow (OfNat.ofNat 4) k)
+        (HAdd.hAdd (HAdd.hAdd (HMul.hMul (OfNat.ofNat 8) k) (OfNat.ofNat 2))
+          (HMul.hMul (HMul.hMul (OfNat.ofNat 8) k)
+            (HPow.hPow (HAdd.hAdd (HPow.hPow k (OfNat.ofNat 2)) (OfNat.ofNat 2)) (OfNat.ofNat 2)))))
+      (SingleLevelGap.satf SingleLevelGap.Hr))
+    (forall (m : Nat)
+      (C :
+        SingleLevelGap.Circ (Prod (GaloisField (OfNat.ofNat 2) k) (GaloisField (OfNat.ofNat 2) k))
+          (Prod (GaloisField (OfNat.ofNat 2) k) (GaloisField (OfNat.ofNat 2) k)) m),
+    SingleLevelGap.Circ.single C → (forall (x :
+          Sum (Prod (GaloisField (OfNat.ofNat 2) k) (GaloisField (OfNat.ofNat 2) k))
+              (Prod (GaloisField (OfNat.ofNat 2) k) (GaloisField (OfNat.ofNat 2) k)) →
+          Bool),
+      Iff (Eq (SingleLevelGap.Circ.val C x (SingleLevelGap.Circ.out C)) Bool.true)
+        (SingleLevelGap.satf SingleLevelGap.Hr x)) →
+    LE.le (HPow.hPow (OfNat.ofNat 8) k) (HMul.hMul (OfNat.ofNat 4) m))
+
+def SingleLevelGap.Wire (X Y : Type 0) (n : Nat) : Type 0 := Sum (Sum X Y) (Fin n)
+
+inductive SingleLevelGap.Circ : Type 0 → Type 0 → Nat → Type 0
+
+def SingleLevelGap.Circ.val :
+  forall {X Y : Type 0} {m : Nat},
+  SingleLevelGap.Circ X Y m → (Sum X Y → Bool) → SingleLevelGap.Wire X Y m → Bool :=
+  fun {X Y : Type 0} {m : Nat} (C : SingleLevelGap.Circ X Y m) (x : Sum X Y → Bool) =>
+  WellFounded.Nat.fix
+    (fun (x._@.SLGapStatement.1311571242._hygCtx._hyg.209 : SingleLevelGap.Wire X Y m) =>
+    SingleLevelGap.Circ.val.match_3
+      (fun (w._@.SLGapStatement.1311571242._hygCtx._hyg.178 : SingleLevelGap.Wire X Y m) => Nat)
+      x._@.SLGapStatement.1311571242._hygCtx._hyg.209
+      (fun (val._@.SLGapStatement.1311571242._hygCtx._hyg.186 : Sum X Y) => OfNat.ofNat 0)
+      (fun (i : Fin m) => HAdd.hAdd (Fin.val i) (OfNat.ofNat 1)))
+    (fun (a._@._internal._hyg.0 : SingleLevelGap.Wire X Y m)
+      (a._@._internal._hyg.0 :
+        (forall (y : SingleLevelGap.Wire X Y m),
+        InvImage
+            (fun (x1._@.Init.WF.1007480251._hygCtx._hyg.20 x2._@.Init.WF.1007480251._hygCtx._hyg.20 : Nat) =>
+            LT.lt x1._@.Init.WF.1007480251._hygCtx._hyg.20 x2._@.Init.WF.1007480251._hygCtx._hyg.20)
+            (fun (x._@.SLGapStatement.1311571242._hygCtx._hyg.209 : SingleLevelGap.Wire X Y m) =>
+            SingleLevelGap.Circ.val.match_3
+              (fun (w._@.SLGapStatement.1311571242._hygCtx._hyg.178 : SingleLevelGap.Wire X Y m) => Nat)
+              x._@.SLGapStatement.1311571242._hygCtx._hyg.209
+              (fun (val._@.SLGapStatement.1311571242._hygCtx._hyg.186 : Sum X Y) => OfNat.ofNat 0)
+              (fun (i : Fin m) => HAdd.hAdd (Fin.val i) (OfNat.ofNat 1))) y a._@._internal._hyg.0 →
+        Bool)) =>
+    SingleLevelGap.Circ.val.match_3
+      (fun (x._@.SLGapStatement.1311571242._hygCtx.30.SLGapStatement.1311571242._hygCtx._hyg.42 :
+          SingleLevelGap.Wire X Y m) =>
+      (forall (y : SingleLevelGap.Wire X Y m),
+        InvImage
+            (fun (x1._@.Init.WF.1007480251._hygCtx._hyg.20 x2._@.Init.WF.1007480251._hygCtx._hyg.20 : Nat) =>
+            LT.lt x1._@.Init.WF.1007480251._hygCtx._hyg.20 x2._@.Init.WF.1007480251._hygCtx._hyg.20)
+            (fun (x._@.SLGapStatement.1311571242._hygCtx._hyg.209 : SingleLevelGap.Wire X Y m) =>
+            SingleLevelGap.Circ.val.match_3
+              (fun (w._@.SLGapStatement.1311571242._hygCtx._hyg.178 : SingleLevelGap.Wire X Y m) => Nat)
+              x._@.SLGapStatement.1311571242._hygCtx._hyg.209
+              (fun (val._@.SLGapStatement.1311571242._hygCtx._hyg.186 : Sum X Y) => OfNat.ofNat 0)
+              (fun (i : Fin m) => HAdd.hAdd (Fin.val i) (OfNat.ofNat 1))) y
+            x._@.SLGapStatement.1311571242._hygCtx.30.SLGapStatement.1311571242._hygCtx._hyg.42 →
+        Bool) →
+      Bool) a._@._internal._hyg.0
+      (fun (v : Sum X Y)
+        (x._@.SLGapStatement.1311571242._hygCtx._hyg.210 :
+          (forall (y : SingleLevelGap.Wire X Y m),
+          InvImage
+              (fun (x1._@.Init.WF.1007480251._hygCtx._hyg.20 x2._@.Init.WF.1007480251._hygCtx._hyg.20 : Nat) =>
+              LT.lt x1._@.Init.WF.1007480251._hygCtx._hyg.20 x2._@.Init.WF.1007480251._hygCtx._hyg.20)
+              (fun (x._@.SLGapStatement.1311571242._hygCtx._hyg.209 : SingleLevelGap.Wire X Y m) =>
+              SingleLevelGap.Circ.val.match_3
+                (fun (w._@.SLGapStatement.1311571242._hygCtx._hyg.178 : SingleLevelGap.Wire X Y m) => Nat)
+                x._@.SLGapStatement.1311571242._hygCtx._hyg.209
+                (fun (val._@.SLGapStatement.1311571242._hygCtx._hyg.186 : Sum X Y) => OfNat.ofNat 0)
+                (fun (i : Fin m) => HAdd.hAdd (Fin.val i) (OfNat.ofNat 1))) y (Sum.inl v) →
+          Bool)) =>
+      x v)
+      (fun (i : Fin m)
+        (x._@.SLGapStatement.1311571242._hygCtx._hyg.210 :
+          (forall (y : SingleLevelGap.Wire X Y m),
+          InvImage
+              (fun (x1._@.Init.WF.1007480251._hygCtx._hyg.20 x2._@.Init.WF.1007480251._hygCtx._hyg.20 : Nat) =>
+              LT.lt x1._@.Init.WF.1007480251._hygCtx._hyg.20 x2._@.Init.WF.1007480251._hygCtx._hyg.20)
+              (fun (x._@.SLGapStatement.1311571242._hygCtx._hyg.209 : SingleLevelGap.Wire X Y m) =>
+              SingleLevelGap.Circ.val.match_3
+                (fun (w._@.SLGapStatement.1311571242._hygCtx._hyg.178 : SingleLevelGap.Wire X Y m) => Nat)
+                x._@.SLGapStatement.1311571242._hygCtx._hyg.209
+                (fun (val._@.SLGapStatement.1311571242._hygCtx._hyg.186 : Sum X Y) => OfNat.ofNat 0)
+                (fun (i : Fin m) => HAdd.hAdd (Fin.val i) (OfNat.ofNat 1))) y (Sum.inr i) →
+          Bool)) =>
+      let a : Bool :=
+        SingleLevelGap.Circ.val.match_1
+          (fun (x._@.SLGapStatement.1311571242._hygCtx._hyg.103 : SingleLevelGap.Wire X Y m) => Bool)
+          (SingleLevelGap.Circ.inp C i Bool.false)
+          (fun (v : Sum X Y) (h : Eq (SingleLevelGap.Circ.inp C i Bool.false) (Sum.inl v)) => x v)
+          (fun (j : Fin m) (h : Eq (SingleLevelGap.Circ.inp C i Bool.false) (Sum.inr j)) =>
+          let this : LT.lt j i := _; x._@.SLGapStatement.1311571242._hygCtx._hyg.210 (Sum.inr j) _);
+      let b : Bool :=
+        SingleLevelGap.Circ.val.match_1
+          (fun (x._@.SLGapStatement.1311571242._hygCtx._hyg.137 : SingleLevelGap.Wire X Y m) => Bool)
+          (SingleLevelGap.Circ.inp C i Bool.true)
+          (fun (v : Sum X Y) (h : Eq (SingleLevelGap.Circ.inp C i Bool.true) (Sum.inl v)) => x v)
+          (fun (j : Fin m) (h : Eq (SingleLevelGap.Circ.inp C i Bool.true) (Sum.inr j)) =>
+          let this : LT.lt j i := _; x._@.SLGapStatement.1311571242._hygCtx._hyg.210 (Sum.inr j) _);
+      dite (Eq (SingleLevelGap.Circ.isAnd C i) Bool.true)
+        (fun (h._@.SLGapStatement.1311571242._hygCtx._hyg.207 : Eq (SingleLevelGap.Circ.isAnd C i) Bool.true) =>
+        Bool.and a b)
+        (fun (h._@.SLGapStatement.1311571242._hygCtx._hyg.208 : Not (Eq (SingleLevelGap.Circ.isAnd C i) Bool.true)) =>
+        Bool.or a b)) a._@._internal._hyg.0)
+
+def SingleLevelGap.Circ.andFree :
+  forall {X Y : Type 0} {m : Nat}, SingleLevelGap.Circ X Y m → SingleLevelGap.Wire X Y m → Sort 0 :=
+  fun {X Y : Type 0} {m : Nat} (C : SingleLevelGap.Circ X Y m) =>
+  WellFounded.Nat.fix
+    (fun (x._@.SLGapStatement.2351437265._hygCtx._hyg.120 : SingleLevelGap.Wire X Y m) =>
+    SingleLevelGap.Circ.val.match_3
+      (fun (w._@.SLGapStatement.2351437265._hygCtx._hyg.91 : SingleLevelGap.Wire X Y m) => Nat)
+      x._@.SLGapStatement.2351437265._hygCtx._hyg.120
+      (fun (val._@.SLGapStatement.2351437265._hygCtx._hyg.99 : Sum X Y) => OfNat.ofNat 0)
+      (fun (i : Fin m) => HAdd.hAdd (Fin.val i) (OfNat.ofNat 1)))
+    (fun (a._@._internal._hyg.0 : SingleLevelGap.Wire X Y m)
+      (a._@._internal._hyg.0 :
+        (forall (y : SingleLevelGap.Wire X Y m),
+        InvImage
+            (fun (x1._@.Init.WF.1007480251._hygCtx._hyg.20 x2._@.Init.WF.1007480251._hygCtx._hyg.20 : Nat) =>
+            LT.lt x1._@.Init.WF.1007480251._hygCtx._hyg.20 x2._@.Init.WF.1007480251._hygCtx._hyg.20)
+            (fun (x._@.SLGapStatement.2351437265._hygCtx._hyg.120 : SingleLevelGap.Wire X Y m) =>
+            SingleLevelGap.Circ.val.match_3
+              (fun (w._@.SLGapStatement.2351437265._hygCtx._hyg.91 : SingleLevelGap.Wire X Y m) => Nat)
+              x._@.SLGapStatement.2351437265._hygCtx._hyg.120
+              (fun (val._@.SLGapStatement.2351437265._hygCtx._hyg.99 : Sum X Y) => OfNat.ofNat 0)
+              (fun (i : Fin m) => HAdd.hAdd (Fin.val i) (OfNat.ofNat 1))) y a._@._internal._hyg.0 →
+        Sort 0)) =>
+    SingleLevelGap.Circ.val.match_3
+      (fun (x._@.SLGapStatement.2351437265._hygCtx.23.SLGapStatement.2351437265._hygCtx._hyg.35 :
+          SingleLevelGap.Wire X Y m) =>
+      (forall (y : SingleLevelGap.Wire X Y m),
+        InvImage
+            (fun (x1._@.Init.WF.1007480251._hygCtx._hyg.20 x2._@.Init.WF.1007480251._hygCtx._hyg.20 : Nat) =>
+            LT.lt x1._@.Init.WF.1007480251._hygCtx._hyg.20 x2._@.Init.WF.1007480251._hygCtx._hyg.20)
+            (fun (x._@.SLGapStatement.2351437265._hygCtx._hyg.120 : SingleLevelGap.Wire X Y m) =>
+            SingleLevelGap.Circ.val.match_3
+              (fun (w._@.SLGapStatement.2351437265._hygCtx._hyg.91 : SingleLevelGap.Wire X Y m) => Nat)
+              x._@.SLGapStatement.2351437265._hygCtx._hyg.120
+              (fun (val._@.SLGapStatement.2351437265._hygCtx._hyg.99 : Sum X Y) => OfNat.ofNat 0)
+              (fun (i : Fin m) => HAdd.hAdd (Fin.val i) (OfNat.ofNat 1))) y
+            x._@.SLGapStatement.2351437265._hygCtx.23.SLGapStatement.2351437265._hygCtx._hyg.35 →
+        Sort 0) →
+      Sort 0) a._@._internal._hyg.0
+      (fun (val._@.SLGapStatement.2351437265._hygCtx._hyg.43 : Sum X Y)
+        (x._@.SLGapStatement.2351437265._hygCtx._hyg.121 :
+          (forall (y : SingleLevelGap.Wire X Y m),
+          InvImage
+              (fun (x1._@.Init.WF.1007480251._hygCtx._hyg.20 x2._@.Init.WF.1007480251._hygCtx._hyg.20 : Nat) =>
+              LT.lt x1._@.Init.WF.1007480251._hygCtx._hyg.20 x2._@.Init.WF.1007480251._hygCtx._hyg.20)
+              (fun (x._@.SLGapStatement.2351437265._hygCtx._hyg.120 : SingleLevelGap.Wire X Y m) =>
+              SingleLevelGap.Circ.val.match_3
+                (fun (w._@.SLGapStatement.2351437265._hygCtx._hyg.91 : SingleLevelGap.Wire X Y m) => Nat)
+                x._@.SLGapStatement.2351437265._hygCtx._hyg.120
+                (fun (val._@.SLGapStatement.2351437265._hygCtx._hyg.99 : Sum X Y) => OfNat.ofNat 0)
+                (fun (i : Fin m) => HAdd.hAdd (Fin.val i) (OfNat.ofNat 1))) y
+              (Sum.inl val._@.SLGapStatement.2351437265._hygCtx._hyg.43) →
+          Sort 0)) =>
+      True)
+      (fun (i : Fin m)
+        (x._@.SLGapStatement.2351437265._hygCtx._hyg.121 :
+          (forall (y : SingleLevelGap.Wire X Y m),
+          InvImage
+              (fun (x1._@.Init.WF.1007480251._hygCtx._hyg.20 x2._@.Init.WF.1007480251._hygCtx._hyg.20 : Nat) =>
+              LT.lt x1._@.Init.WF.1007480251._hygCtx._hyg.20 x2._@.Init.WF.1007480251._hygCtx._hyg.20)
+              (fun (x._@.SLGapStatement.2351437265._hygCtx._hyg.120 : SingleLevelGap.Wire X Y m) =>
+              SingleLevelGap.Circ.val.match_3
+                (fun (w._@.SLGapStatement.2351437265._hygCtx._hyg.91 : SingleLevelGap.Wire X Y m) => Nat)
+                x._@.SLGapStatement.2351437265._hygCtx._hyg.120
+                (fun (val._@.SLGapStatement.2351437265._hygCtx._hyg.99 : Sum X Y) => OfNat.ofNat 0)
+                (fun (i : Fin m) => HAdd.hAdd (Fin.val i) (OfNat.ofNat 1))) y (Sum.inr i) →
+          Sort 0)) =>
+      And (Eq (SingleLevelGap.Circ.isAnd C i) Bool.false)
+        (forall (b : Bool) (j : Fin m) (h : Eq (SingleLevelGap.Circ.inp C i b) (Sum.inr j)),
+        x._@.SLGapStatement.2351437265._hygCtx._hyg.121 (Sum.inr j) _)) a._@._internal._hyg.0)
+
+def SingleLevelGap.Circ.single :
+  forall {X Y : Type 0} {m : Nat}, SingleLevelGap.Circ X Y m → Sort 0 :=
+  fun {X Y : Type 0} {m : Nat} (C : SingleLevelGap.Circ X Y m) =>
+  forall (i : Fin m),
+  Eq (SingleLevelGap.Circ.isAnd C i) Bool.true → (forall (b : Bool),
+  SingleLevelGap.Circ.andFree C (SingleLevelGap.Circ.inp C i b))
+
+def SingleLevelGap.satf :
+  forall {X Y : Type 0}, (X → Y → Sort 0) → (Sum X Y → Bool) → Sort 0 :=
+  fun {X Y : Type 0} (H : X → Y → Sort 0) (x : Sum X Y → Bool) =>
+  Or
+    (Exists
+      (fun (a : X) =>
+      Exists (fun (a' : X) => And (Ne a a') (And (Eq (x (Sum.inl a)) Bool.true) (Eq (x (Sum.inl a')) Bool.true)))))
+    (Or
+      (Exists
+        (fun (b : Y) =>
+        Exists (fun (b' : Y) => And (Ne b b') (And (Eq (x (Sum.inr b)) Bool.true) (Eq (x (Sum.inr b')) Bool.true)))))
+      (Exists
+        (fun (a : X) =>
+        Exists (fun (b : Y) => And (H a b) (And (Eq (x (Sum.inl a)) Bool.true) (Eq (x (Sum.inr b)) Bool.true))))))
+
+inductive SingleLevelGap.Fm : Type 0 → Type 0
+
+def SingleLevelGap.Fm.eval :
+  forall {V : Type 0}, (V → Bool) → SingleLevelGap.Fm V → Bool :=
+  fun {V : Type 0} (x : V → Bool) (x._@.SLGapStatement.4028165292._hygCtx._hyg.10 : SingleLevelGap.Fm V) =>
+  SingleLevelGap.Fm.brecOn x._@.SLGapStatement.4028165292._hygCtx._hyg.10 (SingleLevelGap.Fm.eval._f x)
+
+def SingleLevelGap.Fm.leaves :
+  forall {V : Type 0}, SingleLevelGap.Fm V → Nat :=
+  fun {V : Type 0} (x._@.SLGapStatement.1680021124._hygCtx._hyg.9 : SingleLevelGap.Fm V) =>
+  SingleLevelGap.Fm.brecOn x._@.SLGapStatement.1680021124._hygCtx._hyg.9 SingleLevelGap.Fm.leaves._f
+
+def SingleLevelGap.Rep :
+  forall {V : Type 0}, Nat → ((V → Bool) → Sort 0) → Sort 0 :=
+  fun {V : Type 0} (s : Nat) (P : (V → Bool) → Sort 0) =>
+  Exists
+    (fun (φ : SingleLevelGap.Fm V) =>
+    And (LE.le (SingleLevelGap.Fm.leaves φ) s)
+      (forall (x : V → Bool), Iff (Eq (SingleLevelGap.Fm.eval x φ) Bool.true) (P x)))
+
+def SingleLevelGap.Hr :
+  forall {F : Type 0} [inst._@.SLGapStatement.3905706532._hygCtx._hyg.3 : Field F], Prod F F → Prod F F → Sort 0 :=
+  fun {F : Type 0} [inst._@.SLGapStatement.3905706532._hygCtx._hyg.3 : Field F] (u v : Prod F F) =>
+  Eq (HMul.hMul (Prod.fst u) (Prod.fst v)) (HAdd.hAdd (Prod.snd u) (Prod.snd v))
+
+axiom propext {a b : Sort 0} : Iff a b → Eq a b
+
+axiom Quot.sound.{u} {α : Sort u} {r : α → α → Sort 0} {a b : α} : r a b → Eq (Quot.mk r a) (Quot.mk r b)
+
+axiom Classical.choice.{u} {α : Sort u} : Nonempty α → α
+
+Checked 33273 declarations with no errors
+ 
+REJECTED | single_level_gap with the value of single_level_lower | thread 'thread_6' (18) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
+REJECTED | single_level_gap with the type of single_level_lower | thread 'thread_1' (22) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
+REJECTED | single_level_gap with the value of SingleLevelGap.upper | thread 'thread_0' (30) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
+REJECTED | single_level_lower with the value of SingleLevelGap.R_inj | thread 'thread_1' (40) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
+REJECTED | SingleLevelGap.gap with the value of SingleLevelGap.card_Hr | thread 'thread_5' (53) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
+REJECTED | SingleLevelGap.upper with the value of SingleLevelGap.two_side | thread 'thread_4' (61) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
+REJECTED | SingleLevelGap.lower with the value of SingleLevelGap.code | thread 'thread_0' (66) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
+REJECTED | SingleLevelGap.Hr_c4 with the value of SingleLevelGap.upper | thread 'thread_3' (78) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
+REJECTED | SingleLevelGap.R_inj with the value of SingleLevelGap.meet | thread 'thread_2' (86) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
+REJECTED | SingleLevelGap.card_Hr with the value of SingleLevelGap.Hr_c4 | thread 'thread_3' (96) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
+RESULT accepted, all controls rejected
