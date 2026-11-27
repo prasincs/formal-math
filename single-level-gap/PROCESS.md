@@ -9,6 +9,11 @@ against the paper.
 25–26 November: search for earlier work (see README); hand proof of the general form with norm graphs, reviewed by two Gemini models, written up as a paper.
 26–27 November: `Gap.lean` (sha256 `1a0cf8f9…abf00`) split into this project's layout, the namespace renamed from `Gap` to `SingleLevelGap`, rebuilt, and checked with nanoda.
 
+27 November: the lower bound for `(t, s)`-free graphs (`single_level_lower_ts`, Lemma 2 of the paper) added as `meet'`,
+`R2`, `code2`, `fibre2`, `lower2`: the same walk with thresholds `t` and `s`, and a bound of `(t - 1) (s - 1)` on the edges
+with a given code instead of injectivity. Two fixes during the build: `omega` could not see through the projections of
+a code tuple, and two calls left a set to be inferred. Rebuilt from clean, checked with nanoda (16 controls).
+
 **Where the ideas come from.** See the README: the lower bound is Amano and Maruoka's, the graph and the upper-bound method are Jukna's. The Lean text is ours.
 
 **Changes from `Gap.lean`.** The definitions the statements use moved, unchanged, to `SLGapStatement.lean`. One proof (`val_gate`) had to change: it restated the `match` inside

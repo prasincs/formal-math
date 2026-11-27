@@ -11,7 +11,18 @@ theorem single_level_gap : ∀ k : ℕ, 0 < k →
       (∀ x, C.val x C.out = true ↔ satf Hr x) → 8 ^ k ≤ 4 * m
 ```
 
-Also proved, for every finite bipartite graph `H` with no 4-cycle: a single-level circuit for `H` plus a clique on each side has at least `|E(H)| / 4` gates (`single_level_lower`).
+Also proved, for every finite bipartite graph `H` between `X` and `Y` and all `t, s ≥ 2`: if no `t` vertices of `X` have
+`s` common neighbours, every single-level circuit for `H` plus a clique on each side has at least
+`|E(H)| / (4 (t - 1) (s - 1))` gates (`single_level_lower_ts`, Lemma 2 of the paper). The case `t = s = 2`, graphs with no
+4-cycle, is `single_level_lower`.
+
+```lean
+theorem single_level_lower_ts : ∀ {X Y : Type} [DecidableEq X] [DecidableEq Y] [Fintype X] [Fintype Y] (t s m : ℕ)
+    (C : Circ X Y m) (H : X → Y → Prop) [DecidablePred fun p : X × Y => H p.1 p.2],
+    2 ≤ t → 2 ≤ s → (∀ (A : Finset X) (B : Finset Y), t ≤ A.card → s ≤ B.card → ∃ a ∈ A, ∃ b ∈ B, ¬ H a b) →
+    C.single → (∀ x, C.val x C.out = true ↔ satf H x) →
+    (Finset.univ.filter fun p : X × Y => H p.1 p.2).card ≤ 4 * (t - 1) * (s - 1) * m
+```
 
 The file to read is [SLGapStatement.lean](SLGapStatement.lean) (imports only Mathlib): circuits with fan-in two and no constants (`Circ`, `Circ.val`), AND-free wires and single-level circuits,
 the edge function `satf`, monotone formulas and their leaf count (`Fm`, `Rep`), the relation `Hr`, and the two statements.
@@ -35,15 +46,16 @@ Revision 2 and the journal version, without comment. Not read: Revision 1 (downl
 
 * Only `t = 2`. The norm-graph version needs the Kollár–Rónyai–Szabó theorem, which is not in Mathlib.
 * The upper bound is a formula bound, so the theorem gives the gap against formulas and therefore also against circuits; the circuit bound `O(n log n)` of the paper is not formalized.
-* The general lemma is for graphs without a 4-cycle; the `(t, s)` version of the paper is not formalized.
+* For norm graphs, the `(t, t! + 1)`-freeness (Kollár–Rónyai–Szabó) and the size of the norm circuit are not formalized, so the
+  gap `n^(1 - 1/t - o(1))` is proved here only through its lower-bound half.
 * Circuits here have no constants; the paper's lower bound assumes the same.
 
 ## Checking it
 
     lake build                  # Lean 4.36.0, Mathlib fc4f59e5 (its v4.36.0 release)
 
-`SLGapMain.lean` prints the axioms of both theorems: `propext`, `Classical.choice`, `Quot.sound`. Second kernel: nanoda checked the export of both theorems (33,273 declarations) and rejected
-all 10 tampered copies in `verify/nanoda.json`, each of which changes what is claimed; see `verify/nanoda.log`. How it was made: [PROCESS.md](PROCESS.md).
+`SLGapMain.lean` prints the axioms of the three theorems: `propext`, `Classical.choice`, `Quot.sound`. Second kernel: nanoda checked the export of the three theorems (33,301 declarations) and rejected
+all 16 tampered copies in `verify/nanoda.json`, each of which changes what is claimed; see `verify/nanoda.log`. How it was made: [PROCESS.md](PROCESS.md).
 
 ## The paper
 

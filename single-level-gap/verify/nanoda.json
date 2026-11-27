@@ -2,10 +2,12 @@
   "module": "SLGapMain",
   "theorems": [
     "single_level_lower",
+    "single_level_lower_ts",
     "single_level_gap"
   ],
   "show": [
     "SingleLevelLower",
+    "SingleLevelLowerTS",
     "SingleLevelGap",
     "SingleLevelGap.Wire",
     "SingleLevelGap.Circ",
@@ -68,6 +70,36 @@
     [
       "SingleLevelGap.card_Hr",
       "SingleLevelGap.Hr_c4",
+      "value"
+    ],
+    [
+      "single_level_lower_ts",
+      "single_level_lower",
+      "value"
+    ],
+    [
+      "single_level_lower_ts",
+      "single_level_lower",
+      "type"
+    ],
+    [
+      "SingleLevelGap.lower2",
+      "SingleLevelGap.fibre2",
+      "value"
+    ],
+    [
+      "SingleLevelGap.fibre2",
+      "SingleLevelGap.code2",
+      "value"
+    ],
+    [
+      "SingleLevelGap.code2",
+      "SingleLevelGap.meet'",
+      "value"
+    ],
+    [
+      "single_level_gap",
+      "single_level_lower_ts",
       "value"
     ]
   ]

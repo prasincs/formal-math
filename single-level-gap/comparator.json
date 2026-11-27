@@ -3,6 +3,7 @@
   "solution_module": "SLGapMain",
   "theorem_names": [
     "single_level_lower",
+    "single_level_lower_ts",
     "single_level_gap"
   ],
   "definition_names": [],

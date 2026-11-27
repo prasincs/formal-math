@@ -8,5 +8,8 @@ import SLGapStatement
 theorem single_level_lower : SingleLevelLower := by
   sorry
 
+theorem single_level_lower_ts : SingleLevelLowerTS := by
+  sorry
+
 theorem single_level_gap : SingleLevelGap := by
   sorry

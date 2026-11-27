@@ -96,6 +96,16 @@ def SingleLevelLower : Prop :=
     (∀ a a' b b', H a b → H a b' → H a' b → H a' b' → a = a' ∨ b = b') → C.single →
     (∀ x, C.val x C.out = true ↔ satf H x) → (Finset.univ.filter fun p : X × Y => H p.1 p.2).card ≤ 4 * m
 
+/-- The lower bound for `(t, s)`-free graphs (Lemma 2 of the paper): if no `t` vertices of `X` have `s` common
+neighbours in `Y`, every single-level circuit computing the edge function of `H` plus a clique on each side has at least
+`|E(H)| / (4 (t - 1) (s - 1))` gates. -/
+def SingleLevelLowerTS : Prop :=
+  ∀ {X Y : Type} [DecidableEq X] [DecidableEq Y] [Fintype X] [Fintype Y] (t s m : ℕ) (C : Circ X Y m)
+    (H : X → Y → Prop) [DecidablePred fun p : X × Y => H p.1 p.2],
+    2 ≤ t → 2 ≤ s → (∀ (A : Finset X) (B : Finset Y), t ≤ A.card → s ≤ B.card → ∃ a ∈ A, ∃ b ∈ B, ¬ H a b) →
+    C.single → (∀ x, C.val x C.out = true ↔ satf H x) →
+    (Finset.univ.filter fun p : X × Y => H p.1 p.2).card ≤ 4 * (t - 1) * (s - 1) * m
+
 /-- The explicit gap: over `GF(2^k)`, with `N = 4^k` vertices on each side and the `N^(3/2)` edges `a c = b + d`, both sides made
 cliques, the edge function has a monotone formula with at most `N (8k + 2 + 8k(k^2+2)^2)` leaves, and every single-level
 circuit for it has at least `8^k / 4 = N^(3/2) / 4` gates. -/

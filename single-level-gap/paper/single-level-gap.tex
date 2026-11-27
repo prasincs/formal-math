@@ -37,8 +37,8 @@ Jukna applies to any graph whose edges between two vertex classes form a graph w
 subgraphs. We apply it to algebraic graphs whose adjacency has a small circuit over the vertex addresses. For every
 fixed $t\ge 2$, the bipartite norm graphs of Koll\'ar, R\'onyai and Szab\'o, with a clique added on each side, give
 $\Cone(f_G)/\Csize(f_G)=n^{1-1/t-o(1)}$; letting $t$ grow slowly with $n$ gives
-$n/2^{O(\sqrt{\log n\log\log n})}=n^{1-o(1)}$. The gaps persist against monotone formulas. For $t=2$, with the
-sum-product graph $ac=b+d$ over $\GF(2^k)$, both bounds are formalized in Lean~4 with Mathlib.
+$n/2^{O(\sqrt{\log n\log\log n})}=n^{1-o(1)}$. The gaps persist against monotone formulas. The lower bound is formalized in Lean~4 with Mathlib for all $t$ and $s$, and
+for $t=2$, with the sum-product graph $ac=b+d$ over $\GF(2^k)$, so is the upper bound.
 \end{abstract}
 
 \section{Introduction}
@@ -129,7 +129,7 @@ If $H$ is $(t,s)$-free then every single-level circuit for $f_G$ has at least $|
 
 For $t=s=2$ the lemma gives $|E(H)|\le 4\,\Cone(f_G)$. Up to the constant, it is~\cite[Lemma~3.13]{Juk06}, which
 gives $\Omega(|E(H)|/t^3)$ for star-free $H$ without $K_{t,t}$; Lemma~\ref{lem:lower} needs no star-freeness, because
-$f_G$ is $0$ on single vertices. The proof follows the Amano--Maruoka charging
+$f_G$ is $0$ on single vertices. The proof, checked in Lean for all $t$ and $s$ (Section~\ref{sec:lean}), follows the Amano--Maruoka charging
 argument~\cite{AM06}.
 
 \begin{proof}
@@ -306,7 +306,7 @@ $Nm^{O(\log t)}+O(mN)=n\cdot 2^{O((\log\log n)^2)}$ leaves. So both ratios are a
 $N/(N^{1/t}\,t!\,2^{O((\log\log n)^2)})$, and $\log_2(N^{1/t}\,t!)=k+(1+o(1))\,t\log_2 t=(\sqrt2+o(1))\sqrt{m\log_2 m}$.
 \end{proof}
 
-\section{The case \texorpdfstring{$t=2$}{t=2} in Lean}\label{sec:lean}
+\section{Formalization in Lean}\label{sec:lean}
 
 Let $F=\GF(2^k)$, let $X$ and $Y$ be two copies of $F^2$, and join $(a,b)\in X$ to $(c,d)\in Y$ iff $ac=b+d$. This is
 the sum-product graph of~\cite[Sect.~7.2]{BFC}, there over $\mathbb Z_p$. It has $N^{3/2}$ edges ($N=4^k$) and no 4-cycle: for distinct $(a,b)$
@@ -323,11 +323,21 @@ $|E(H)|\le 4\,\Cone(f_G)$; the general lemma \texttt{single\_level\_lower} holds
 4-cycle);
 \item $f_G$ has a monotone formula with at most $4^k\,(8k+2+8k(k^2+2)^2)$ leaves.
 \end{itemize}
-The theorems depend only on the axioms \texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}. A second,
-independent kernel (nanoda) accepts the exported proofs and rejects ten tampered copies that change what is claimed.
-Together with an explicit construction of $\GF(2^k)$ (the Lean field is Mathlib's \texttt{GaloisField}, defined
-non-constructively), this gives a gap of $\Omega(\sqrt N/k^5)=n^{1/2-o(1)}$ against formulas. TODO: decide whether to
-formalize Lemma~\ref{lem:lower} for general $(t,s)$; the norm-graph freeness theorem is not in Mathlib.
+Together with an explicit construction of
+$\GF(2^k)$ (the Lean field is Mathlib's \texttt{GaloisField}, defined non-constructively), this gives a gap of
+$\Omega(\sqrt N/k^5)=n^{1/2-o(1)}$ against formulas.
+
+\paragraph{Lemma~\ref{lem:lower} in Lean.} The development also proves Lemma~\ref{lem:lower} in full
+(\texttt{single\_level\_lower\_ts}): for every finite bipartite $H$ and all $t,s\ge 2$, if no $t$ vertices of $X$ have
+$s$ common neighbours, then every single-level circuit for $f_G$ with $M$ gates satisfies $|E(H)|\le 4(t-1)(s-1)M$. The
+Lean proof follows the proof in Section~3: the same walk with thresholds $t$ and $s$, and a bound on the edges with a given
+code. So the lower-bound half of Theorem~\ref{thm:main} and of Corollary~\ref{cor:growing} is machine-checked, given
+the $(t,t!+1)$-freeness of norm graphs~\cite{KRS96}, which is not in Mathlib; the upper-bound half for norm graphs
+(Lemma~\ref{lem:normcircuit}) is not formalized.
+
+All three theorems depend only on the axioms \texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}. A
+second, independent kernel (nanoda) accepts the exported proofs and rejects sixteen tampered copies that change what is
+claimed.
 
 \section{Remarks}
 
@@ -381,7 +391,7 @@ grow with $n$, which gives Corollary~\ref{cor:growing}; the other model checked 
 
 \paragraph{How the output was checked.} The statements of Section~\ref{sec:lean} are checked by the Lean kernel and by
 nanoda, an independent kernel. The adjacency circuit used in Figure~\ref{fig:gap} was checked against direct field
-arithmetic on all inputs for small fields. All other arguments were checked by the author and by the reviews above, not
+arithmetic on all inputs for small fields. Lemma~\ref{lem:lower} is also checked by both kernels for all $t$ and $s$. All other arguments were checked by the author and by the reviews above, not
 by machine. Every citation was compared with the cited work, or with its authors' posted copy, except~\cite{LW91}, which we cite only
 through~\cite{AM06,Juk06}.
 

@@ -1,5 +1,7 @@
 theorem single_level_lower : SingleLevelLower := _
 
+theorem single_level_lower_ts : SingleLevelLowerTS := _
+
 theorem single_level_gap : SingleLevelGap := _
 
 def SingleLevelLower :
@@ -16,6 +18,23 @@ def SingleLevelLower :
     Iff (Eq (SingleLevelGap.Circ.val C x (SingleLevelGap.Circ.out C)) Bool.true) (SingleLevelGap.satf H x)) →
   LE.le (Finset.card (Finset.filter (fun (p : Prod X Y) => H (Prod.fst p) (Prod.snd p)) Finset.univ))
     (HMul.hMul (OfNat.ofNat 4) m)
+
+def SingleLevelLowerTS :
+  Sort 0 :=
+  forall {X Y : Type 0} [inst._@.SLGapStatement.1105175660._hygCtx._hyg.7 : DecidableEq X]
+    [inst._@.SLGapStatement.1105175660._hygCtx._hyg.10 : DecidableEq Y]
+    [inst._@.SLGapStatement.1105175660._hygCtx._hyg.13 : Fintype X]
+    [inst._@.SLGapStatement.1105175660._hygCtx._hyg.16 : Fintype Y] (t s m : Nat) (C : SingleLevelGap.Circ X Y m)
+    (H : X → Y → Sort 0)
+    [inst._@.SLGapStatement.1105175660._hygCtx._hyg.37 :
+      DecidablePred (fun (p : Prod X Y) => H (Prod.fst p) (Prod.snd p))],
+  LE.le (OfNat.ofNat 2) t → LE.le (OfNat.ofNat 2) s → (forall (A : Finset X) (B : Finset Y),
+    LE.le t (Finset.card A) → LE.le s (Finset.card B) → Exists
+      (fun (a : X) => And (Membership.mem A a) (Exists (fun (b : Y) => And (Membership.mem B b) (Not (H a b)))))) →
+  SingleLevelGap.Circ.single C → (forall (x : Sum X Y → Bool),
+    Iff (Eq (SingleLevelGap.Circ.val C x (SingleLevelGap.Circ.out C)) Bool.true) (SingleLevelGap.satf H x)) →
+  LE.le (Finset.card (Finset.filter (fun (p : Prod X Y) => H (Prod.fst p) (Prod.snd p)) Finset.univ))
+    (HMul.hMul (HMul.hMul (HMul.hMul (OfNat.ofNat 4) (HSub.hSub t (OfNat.ofNat 1))) (HSub.hSub s (OfNat.ofNat 1))) m)
 
 def SingleLevelGap :
   Sort 0 :=
@@ -254,16 +273,22 @@ axiom Quot.sound.{u} {α : Sort u} {r : α → α → Sort 0} {a b : α} : r a b
 
 axiom Classical.choice.{u} {α : Sort u} : Nonempty α → α
 
-Checked 33273 declarations with no errors
+Checked 33301 declarations with no errors
  
 REJECTED | single_level_gap with the value of single_level_lower | thread 'thread_6' (18) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
-REJECTED | single_level_gap with the type of single_level_lower | thread 'thread_1' (22) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
-REJECTED | single_level_gap with the value of SingleLevelGap.upper | thread 'thread_0' (30) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
-REJECTED | single_level_lower with the value of SingleLevelGap.R_inj | thread 'thread_1' (40) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
-REJECTED | SingleLevelGap.gap with the value of SingleLevelGap.card_Hr | thread 'thread_5' (53) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
-REJECTED | SingleLevelGap.upper with the value of SingleLevelGap.two_side | thread 'thread_4' (61) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
-REJECTED | SingleLevelGap.lower with the value of SingleLevelGap.code | thread 'thread_0' (66) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
-REJECTED | SingleLevelGap.Hr_c4 with the value of SingleLevelGap.upper | thread 'thread_3' (78) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
-REJECTED | SingleLevelGap.R_inj with the value of SingleLevelGap.meet | thread 'thread_2' (86) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
-REJECTED | SingleLevelGap.card_Hr with the value of SingleLevelGap.Hr_c4 | thread 'thread_3' (96) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
+REJECTED | single_level_gap with the type of single_level_lower | thread 'thread_5' (26) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
+REJECTED | single_level_gap with the value of SingleLevelGap.upper | thread 'thread_7' (37) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
+REJECTED | single_level_lower with the value of SingleLevelGap.R_inj | thread 'thread_7' (46) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
+REJECTED | SingleLevelGap.gap with the value of SingleLevelGap.card_Hr | thread 'thread_2' (50) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
+REJECTED | SingleLevelGap.upper with the value of SingleLevelGap.two_side | thread 'thread_2' (59) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
+REJECTED | SingleLevelGap.lower with the value of SingleLevelGap.code | thread 'thread_1' (67) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
+REJECTED | SingleLevelGap.Hr_c4 with the value of SingleLevelGap.upper | thread 'thread_7' (82) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
+REJECTED | SingleLevelGap.R_inj with the value of SingleLevelGap.meet | thread 'thread_0' (84) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
+REJECTED | SingleLevelGap.card_Hr with the value of SingleLevelGap.Hr_c4 | thread 'thread_4' (97) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run w
+REJECTED | single_level_lower_ts with the value of single_level_lower | thread 'thread_5' (107) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run 
+REJECTED | single_level_lower_ts with the type of single_level_lower | thread 'thread_2' (113) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run 
+REJECTED | SingleLevelGap.lower2 with the value of SingleLevelGap.fibre2 | thread 'thread_2' (122) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run 
+REJECTED | SingleLevelGap.fibre2 with the value of SingleLevelGap.code2 | thread 'thread_5' (134) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run 
+REJECTED | SingleLevelGap.code2 with the value of SingleLevelGap.meet' | thread 'thread_1' (139) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run 
+REJECTED | single_level_gap with the value of single_level_lower_ts | thread 'thread_2' (149) panicked at src/tc.rs:988:71: assertion failed: self.def_eq(u, v) note: run 
 RESULT accepted, all controls rejected

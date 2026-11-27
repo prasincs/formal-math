@@ -249,6 +249,187 @@ theorem lower [Fintype X] [Fintype Y] {m : ℕ} (C : Circ X Y m) (H : X → Y �
   simp
   omega
 
+/-! ### The lower bound for `(t, s)`-free graphs
+
+The same charging as above, with thresholds `t` and `s` in place of `2`: instead of an injective code, every code
+receives at most `(t - 1) (s - 1)` edges. -/
+
+/-- The letters of a wire on one side, as a finite set. -/
+noncomputable def L [Fintype X] [Fintype Y] {Z : Type} [Fintype Z] {m : ℕ} (C : Circ X Y m) (e : Z → X ⊕ Y)
+    (w : Wire X Y m) : Finset Z := by
+  classical
+  exact Finset.univ.filter fun z => e z ∈ C.S w
+
+theorem mem_L [Fintype X] [Fintype Y] {Z : Type} [Fintype Z] {m : ℕ} (C : Circ X Y m) (e : Z → X ⊕ Y)
+    (w : Wire X Y m) (z : Z) : z ∈ L C e w ↔ e z ∈ C.S w := by
+  classical
+  simp [L]
+
+/-- Walking up from a letter `z` in an AND-free wire with at least `r` letters on one side: the first wire with at least
+`r` letters is an OR gate `h` whose operand on the walk has fewer than `r`. -/
+theorem meet' [Fintype X] [Fintype Y] {Z : Type} [Fintype Z] {m : ℕ} (C : Circ X Y m) (e : Z → X ⊕ Y)
+    (hinj : Function.Injective e) (r : ℕ) (hr : 2 ≤ r) (z : Z) :
+    ∀ w, C.andFree w → e z ∈ C.S w → r ≤ (L C e w).card →
+    ∃ (h : Fin m) (b : Bool), C.isAnd h = false ∧ e z ∈ C.S (C.inp h b) ∧ (L C e (C.inp h b)).card < r ∧
+      r ≤ (L C e (Sum.inr h)).card ∧ ∀ y, e y ∈ C.S (Sum.inr h) → e y ∈ C.S w := by
+  refine wind C _ ?_ ?_
+  · intro v _ hz hcard
+    exfalso
+    have hsub : L C e (Sum.inl v) ⊆ {z} := by
+      intro y hy
+      have hy' := (mem_L C e _ y).1 hy
+      have e1 : e y = v := by simpa [Circ.S, val_inl, one] using hy'
+      have e2 : e z = v := by simpa [Circ.S, val_inl, one] using hz
+      exact Finset.mem_singleton.2 (hinj (e1.trans e2.symm))
+    have := Finset.card_le_card hsub
+    rw [Finset.card_singleton] at this
+    omega
+  · intro i ih hf hz hcard
+    obtain ⟨h1, h2⟩ := andFree_gate C i hf
+    obtain ⟨b, hb⟩ := (S_or C i h1 _).1 hz
+    by_cases hm : r ≤ (L C e (C.inp i b)).card
+    · obtain ⟨h, k, a1, a2, a3, a4, a5⟩ := ih b (h2 b) hb hm
+      exact ⟨h, k, a1, a2, a3, a4, fun y hy => (S_or C i h1 _).2 ⟨b, a5 y hy⟩⟩
+    · exact ⟨i, b, h1, hb, by omega, hcard, fun y hy => hy⟩
+
+/-- The code of an edge for `(t, s)`-free graphs: an AND gate with few letters on both sides, or the first OR gate with
+at least `s` letters in `Y` (part bit `true`), or with at least `t` letters in `X` (part bit `false`). -/
+def R2 [Fintype X] [Fintype Y] {m : ℕ} (C : Circ X Y m) (H : X → Y → Prop) (t s : ℕ) (u : X) (v : Y)
+    (c : Fin m × Bool × Bool) : Prop :=
+  (C.isAnd c.1 = true ∧ Sum.inl u ∈ C.S (C.inp c.1 c.2.1) ∧ Sum.inr v ∈ C.S (C.inp c.1 (!c.2.1)) ∧
+    (L C (Sum.inl : X → X ⊕ Y) (C.inp c.1 c.2.1)).card < t ∧ (L C (Sum.inr : Y → X ⊕ Y) (C.inp c.1 (!c.2.1))).card < s) ∨
+  (C.isAnd c.1 = false ∧ c.2.2 = true ∧ Sum.inr v ∈ C.S (C.inp c.1 c.2.1) ∧
+    (L C (Sum.inr : Y → X ⊕ Y) (C.inp c.1 c.2.1)).card < s ∧ s ≤ (L C (Sum.inr : Y → X ⊕ Y) (Sum.inr c.1)).card ∧
+    ∀ b, Sum.inr b ∈ C.S (Sum.inr c.1) → H u b) ∨
+  (C.isAnd c.1 = false ∧ c.2.2 = false ∧ Sum.inl u ∈ C.S (C.inp c.1 c.2.1) ∧
+    (L C (Sum.inl : X → X ⊕ Y) (C.inp c.1 c.2.1)).card < t ∧ t ≤ (L C (Sum.inl : X → X ⊕ Y) (Sum.inr c.1)).card ∧
+    ∀ a, Sum.inl a ∈ C.S (Sum.inr c.1) → H a v)
+
+/-- Every edge of `H` has a code. -/
+theorem code2 [Fintype X] [Fintype Y] {m : ℕ} (C : Circ X Y m) (H : X → Y → Prop) (t s : ℕ) (ht : 2 ≤ t) (hs2 : 2 ≤ s)
+    (hsg : C.single) (hf : ∀ x, C.val x C.out = true ↔ satf H x) (u : X) (v : Y) (huv : H u v) :
+    ∃ c, R2 C H t s u v c := by
+  obtain ⟨g, hg, hle, hgv⟩ := descend C H u v C.out (fun x hx => (hf x).1 hx) ((hf _).2 ((sat_two H u v).2 huv))
+  have fr := hsg g hg
+  have hab := (val_and C _ g hg).1 hgv
+  have disj : ∀ w k, w ∈ C.S (C.inp g k) → w ∈ C.S (C.inp g (!k)) → False := by
+    intro w k h1 h2
+    refine not_one H w (hle _ ((val_and C _ g hg).2 fun b => ?_))
+    rcases Bool.eq_or_eq_not b k with rfl | rfl
+    · exact h1
+    · exact h2
+  have ex : ∀ k, Sum.inl u ∈ C.S (C.inp g k) ∨ Sum.inr v ∈ C.S (C.inp g k) := by
+    intro k
+    obtain ⟨w, hw, hx⟩ := (val_free C _ _ (fr k)).1 (hab k)
+    have : w = Sum.inl u ∨ w = Sum.inr v := by simpa [two] using hx
+    rcases this with rfl | rfl
+    · exact Or.inl hw
+    · exact Or.inr hw
+  obtain ⟨k, htu, htv⟩ : ∃ k, Sum.inl u ∈ C.S (C.inp g k) ∧ Sum.inr v ∈ C.S (C.inp g (!k)) := by
+    rcases ex true with h | h
+    · rcases ex false with h' | h'
+      · exact (disj _ true h h').elim
+      · exact ⟨true, h, h'⟩
+    · rcases ex false with h' | h'
+      · exact ⟨false, h', h⟩
+      · exact (disj _ true h h').elim
+  have prod : ∀ a b, Sum.inl a ∈ C.S (C.inp g k) → Sum.inr b ∈ C.S (C.inp g (!k)) → H a b := by
+    intro a b ha hb
+    refine (sat_two H a b).1 (hle _ ((val_and C _ g hg).2 fun s' => ?_))
+    rcases Bool.eq_or_eq_not s' k with rfl | rfl
+    · exact (val_free C _ _ (fr _)).2 ⟨_, ha, by simp [two]⟩
+    · exact (val_free C _ _ (fr _)).2 ⟨_, hb, by simp [two]⟩
+  by_cases hP : t ≤ (L C (Sum.inl : X → X ⊕ Y) (C.inp g k)).card
+  · obtain ⟨h, b, k1, k2, k3, k4, k5⟩ := meet' C (Sum.inl : X → X ⊕ Y) Sum.inl_injective t ht u _ (fr k) htu hP
+    exact ⟨(h, b, false), Or.inr (Or.inr ⟨k1, rfl, k2, k3, k4, fun a ha => prod a v (k5 a ha) htv⟩)⟩
+  · by_cases hQ : s ≤ (L C (Sum.inr : Y → X ⊕ Y) (C.inp g (!k))).card
+    · obtain ⟨h, b, k1, k2, k3, k4, k5⟩ := meet' C (Sum.inr : Y → X ⊕ Y) Sum.inr_injective s hs2 v _ (fr (!k)) htv hQ
+      exact ⟨(h, b, true), Or.inr (Or.inl ⟨k1, rfl, k2, k3, k4, fun b' hb => prod u b' htu (k5 b' hb)⟩)⟩
+    · exact ⟨(g, k, true), Or.inl ⟨hg, htu, htv, Nat.lt_of_not_le hP, Nat.lt_of_not_le hQ⟩⟩
+
+/-- The edges with a given code lie in a product of two sets with at most `(t - 1) (s - 1)` pairs. -/
+theorem fibre2 [Fintype X] [Fintype Y] {m : ℕ} (C : Circ X Y m) (H : X → Y → Prop) (t s : ℕ)
+    (hfree : ∀ (A : Finset X) (B : Finset Y), t ≤ A.card → s ≤ B.card → ∃ a ∈ A, ∃ b ∈ B, ¬ H a b)
+    (c : Fin m × Bool × Bool) :
+    ∃ (P1 : Finset X) (P2 : Finset Y), P1.card * P2.card ≤ (t - 1) * (s - 1) ∧
+      ∀ u v, R2 C H t s u v c → u ∈ P1 ∧ v ∈ P2 := by
+  classical
+  -- common neighbours of a large set have few elements
+  have nx : ∀ T : Finset Y, s ≤ T.card → (Finset.univ.filter fun a : X => ∀ b ∈ T, H a b).card < t := by
+    intro T hT
+    by_contra hc
+    obtain ⟨a, ha, b, hb, hn⟩ := hfree (Finset.univ.filter fun a : X => ∀ b ∈ T, H a b) T (by omega) hT
+    exact hn ((Finset.mem_filter.1 ha).2 b hb)
+  have ny : ∀ A : Finset X, t ≤ A.card → (Finset.univ.filter fun b : Y => ∀ a ∈ A, H a b).card < s := by
+    intro A hA
+    by_contra hc
+    obtain ⟨a, ha, b, hb, hn⟩ := hfree A (Finset.univ.filter fun b : Y => ∀ a ∈ A, H a b) hA (by omega)
+    exact hn ((Finset.mem_filter.1 hb).2 a ha)
+  by_cases hex : ∃ u v, R2 C H t s u v c
+  swap
+  · exact ⟨∅, ∅, by simp, fun u v h => absurd ⟨u, v, h⟩ hex⟩
+  obtain ⟨u0, v0, h0⟩ := hex
+  rcases h0 with ⟨o, _, _, ca, cb⟩ | ⟨o, p, _, cb, cs, _⟩ | ⟨o, p, _, ca, ct, _⟩
+  · refine ⟨L C (Sum.inl : X → X ⊕ Y) (C.inp c.1 c.2.1), L C (Sum.inr : Y → X ⊕ Y) (C.inp c.1 (!c.2.1)),
+      Nat.mul_le_mul (by omega) (by omega), fun u v h => ?_⟩
+    rcases h with ⟨_, hu, hv, _, _⟩ | ⟨o', _⟩ | ⟨o', _⟩
+    · exact ⟨(mem_L C _ _ u).2 hu, (mem_L C _ _ v).2 hv⟩
+    · rw [o] at o'; cases o'
+    · rw [o] at o'; cases o'
+  · refine ⟨Finset.univ.filter fun a : X => ∀ b ∈ L C (Sum.inr : Y → X ⊕ Y) (Sum.inr c.1), H a b,
+      L C (Sum.inr : Y → X ⊕ Y) (C.inp c.1 c.2.1), Nat.mul_le_mul (by have := nx _ cs; omega) (by omega),
+      fun u v h => ?_⟩
+    rcases h with ⟨o', _⟩ | ⟨_, _, hv, _, _, hH⟩ | ⟨_, p', _⟩
+    · rw [o] at o'; cases o'
+    · exact ⟨Finset.mem_filter.2 ⟨Finset.mem_univ _, fun b hb => hH b ((mem_L C _ _ b).1 hb)⟩, (mem_L C _ _ v).2 hv⟩
+    · rw [p] at p'; cases p'
+  · refine ⟨L C (Sum.inl : X → X ⊕ Y) (C.inp c.1 c.2.1),
+      Finset.univ.filter fun b : Y => ∀ a ∈ L C (Sum.inl : X → X ⊕ Y) (Sum.inr c.1), H a b,
+      Nat.mul_le_mul (by omega) (by have := ny _ ct; omega), fun u v h => ?_⟩
+    rcases h with ⟨o', _⟩ | ⟨_, p', _⟩ | ⟨_, _, hu, _, _, hH⟩
+    · rw [o] at o'; cases o'
+    · rw [p] at p'; cases p'
+    · exact ⟨(mem_L C _ _ u).2 hu, Finset.mem_filter.2 ⟨Finset.mem_univ _, fun a ha => hH a ((mem_L C _ _ a).1 ha)⟩⟩
+
+/-- Lemma 2 of the paper: a single-level circuit for the saturated extension of a `(t, s)`-free bipartite graph has at
+least `|E(H)| / (4 (t - 1) (s - 1))` gates. -/
+theorem lower2 [Fintype X] [Fintype Y] {m : ℕ} (C : Circ X Y m) (H : X → Y → Prop) [DecidablePred fun p : X × Y => H p.1 p.2]
+    (t s : ℕ) (ht : 2 ≤ t) (hs2 : 2 ≤ s)
+    (hfree : ∀ (A : Finset X) (B : Finset Y), t ≤ A.card → s ≤ B.card → ∃ a ∈ A, ∃ b ∈ B, ¬ H a b)
+    (hsg : C.single) (hf : ∀ x, C.val x C.out = true ↔ satf H x) :
+    (Finset.univ.filter fun p : X × Y => H p.1 p.2).card ≤ 4 * (t - 1) * (s - 1) * m := by
+  classical
+  have hc : ∀ p : X × Y, ∃ c : Option (Fin m × Bool × Bool), H p.1 p.2 → ∃ d, c = some d ∧ R2 C H t s p.1 p.2 d := by
+    intro p
+    by_cases hp : H p.1 p.2
+    · obtain ⟨d, hd⟩ := code2 C H t s ht hs2 hsg hf p.1 p.2 hp
+      exact ⟨some d, fun _ => ⟨d, rfl, hd⟩⟩
+    · exact ⟨none, fun h => absurd h hp⟩
+  choose φ hφ using hc
+  have key := Finset.card_le_mul_card_image_of_maps_to (f := φ)
+    (s := Finset.univ.filter fun p : X × Y => H p.1 p.2)
+    (t := (Finset.univ : Finset (Fin m × Bool × Bool)).map Function.Embedding.some)
+    (by
+      intro p hp
+      obtain ⟨d, hd, _⟩ := hφ p (by simpa using hp)
+      simp [hd])
+    ((t - 1) * (s - 1))
+    (by
+      intro b hb
+      obtain ⟨d, -, rfl⟩ := Finset.mem_map.1 hb
+      obtain ⟨P1, P2, hcard, hmem⟩ := fibre2 C H t s hfree d
+      refine le_trans (Finset.card_le_card (t := P1 ×ˢ P2) ?_) (by rw [Finset.card_product]; exact hcard)
+      intro p hp
+      obtain ⟨hpE, hpd⟩ := Finset.mem_filter.1 hp
+      obtain ⟨d', hd', hR⟩ := hφ p (by simpa using hpE)
+      have : d' = d := Option.some.inj (hd'.symm.trans hpd)
+      rw [this] at hR
+      exact Finset.mem_product.2 (hmem p.1 p.2 hR))
+  rw [Finset.card_map, Finset.card_univ] at key
+  simp only [Fintype.card_prod, Fintype.card_fin, Fintype.card_bool] at key
+  calc (Finset.univ.filter fun p : X × Y => H p.1 p.2).card ≤ (t - 1) * (s - 1) * (m * (2 * 2)) := key
+    _ = 4 * (t - 1) * (s - 1) * m := by ring
+
 end SingleLevelGap
 
 namespace SingleLevelGap
