@@ -36,7 +36,8 @@ gap. We observe that known ingredients answer this question. The single-level lo
 Jukna applies to any graph whose edges between two vertex classes form a graph without large complete bipartite
 subgraphs; we apply it to algebraic graphs whose adjacency has a small circuit over the vertex addresses. For every fixed
 $t\ge 2$ the bipartite norm graphs of Koll\'ar, R\'onyai and Szab\'o, with a clique added on each side, give
-$\Cone(f_G)/\Csize(f_G)=n^{1-1/t-o(1)}$, and the gap persists against monotone formulas. For $t=2$, with the
+$\Cone(f_G)/\Csize(f_G)=n^{1-1/t-o(1)}$; letting $t$ grow slowly with $n$ gives
+$n/2^{O(\sqrt{\log n\log\log n})}=n^{1-o(1)}$. The gaps persist against monotone formulas. For $t=2$, with the
 sum-product graph $ac=b+d$ over $\GF(2^k)$, both bounds are formalized in Lean~4 with Mathlib.
 \end{abstract}
 
@@ -81,7 +82,8 @@ only has no $K_{2,3}$) and its properties are elementary; for it, both halves of
 
 \paragraph{What is new.} The lower bound is that of Amano and Maruoka and of Jukna, with a sharper constant
 (Lemma~\ref{lem:lower}); the graphs are classical; the upper-bound method is Jukna's. The observation is that these fit
-together to answer Problem~22 of~\cite{JukTR} explicitly, with exponent arbitrarily close to $1$.
+together to answer Problem~22 of~\cite{JukTR} explicitly, and, letting $t$ grow (Corollary~\ref{cor:growing}), with a
+gap of $n^{1-o(1)}$.
 
 \section{Definitions}
 
@@ -261,6 +263,25 @@ $\Csize(f_G)\le 2mN+O(tm^2)$, with $2mN=n(\log_2 n-1)$, so $\Csize(f_G)\le(1+o(1
 $k\to\infty$; and formulas with $N m^{O(\log t)}+O(mN)=n\cdot(\log n)^{O(\log t)}$ leaves.
 \end{proof}
 
+Nothing in Lemmas~\ref{lem:lower}--\ref{lem:normcircuit} needs $t$ to be fixed: their constants are absolute, and the
+theorem of Koll\'ar, R\'onyai and Szab\'o holds for every $t\ge 2$ and every prime power $q$.
+
+\begin{corollary}\label{cor:growing}
+There are explicit graphs $G$ on $n$ vertices (for infinitely many $n$) with
+\[
+\frac{\Cone(f_G)}{\Csize(f_G)}\ \ge\ \frac{n}{2^{(\sqrt2+o(1))\sqrt{\log_2 n\,\log_2\log_2 n}}}\ =\ n^{1-o(1)},
+\]
+and the same holds with monotone formula size in place of $\Csize(f_G)$.
+\end{corollary}
+
+\begin{proof}
+For $m_0\ge 4$ let $t=\lfloor\sqrt{2m_0/\log_2 m_0}\rfloor$ and $k=\lceil m_0/t\rceil$, and take the norm graph with these
+parameters: $m=kt=m_0+O(t)$, $N=2^m$, $n=2N$. By Lemma~\ref{lem:lower}, $\Cone(f_G)\ge N^{2-1/t}/(4(t-1)\,t!)$; by
+Lemmas~\ref{lem:subst} and~\ref{lem:normcircuit}, $\Csize(f_G)\le 2mN+O(tm^2)=(1+o(1))\,n\log_2 n$, and $f_G$ has a
+monotone formula with $Nm^{O(\log t)}+O(mN)=n\cdot 2^{O((\log\log n)^2)}$ leaves. So both ratios are at least
+$N/(N^{1/t}\,t!\,2^{O((\log\log n)^2)})$, and $\log_2(N^{1/t}\,t!)=k+(1+o(1))\,t\log_2 t=(\sqrt2+o(1))\sqrt{m\log_2 m}$.
+\end{proof}
+
 \section{The case \texorpdfstring{$t=2$}{t=2} in Lean}\label{sec:lean}
 
 Let $F=\GF(2^k)$, let $X$ and $Y$ be two copies of $F^2$, and join $(a,b)\in X$ to $(c,d)\in Y$ iff $ac=b+d$: the
@@ -301,9 +322,11 @@ against formulas, only astronomically large $n$. Figure~\ref{fig:gap} plots thes
 program, which builds $\phi$ gate by gate in a polynomial basis, counts the circuit of Lemma~\ref{lem:subst} exactly,
 and uses the lower bound $|E(H)|/(4(t-1)\,t!)$; $\phi$ was checked against direct field arithmetic on all input pairs
 for $(k,t)\in\{(1,2),(2,2),(3,2),(4,2),(1,3),(2,3),(1,4)\}$.
-\item Theorem~\ref{thm:main} does not give a linear gap: the counting argument of~\cite{Juk06} gives
-$n/\log^{O(1)}n$ for non-explicit graphs. Is there an explicit graph with $\Cone(f_G)/\Csize(f_G)=n^{1-o(1)}$?
-Projective norm graphs~\cite{ARS99} [unchecked] improve $t!$ to $(t-1)!$ but not the exponent.
+\item Corollary~\ref{cor:growing} gives an explicit gap of $n/2^{O(\sqrt{\log n\log\log n})}$, while the counting
+argument of~\cite{Juk06} gives $n/\log^{O(1)}n$ for non-explicit graphs. Is there an explicit graph with
+$\Cone(f_G)/\Csize(f_G)=n/\log^{O(1)}n$? Projective norm graphs~\cite{ARS99} [unchecked] improve $t!$ to $(t-1)!$, which
+does not change the factor $2^{(\sqrt2+o(1))\sqrt{\log_2 n\log_2\log_2 n}}$; by the AM--GM inequality this method cannot
+do better than $2^{\Omega(\sqrt{\log n\log\log n})}$.
 \end{itemize}
 
 \paragraph{Acknowledgements.} Much of this work was done with AI assistants; Appendix~\ref{app:ai} describes
@@ -326,7 +349,8 @@ Figure~\ref{fig:gap} and the figures, and drafted the text.
 Lemma~\ref{lem:subst} and the gap estimate independently. One of them found that an earlier version of the charging
 argument did not separate the two walk cases, and gave a six-vertex instance where two edges received the same code;
 the part bit in the proof of Lemma~\ref{lem:lower} fixes this. The reviews also led to the asymptotic form of
-Theorem~\ref{thm:main} and to the remark on constructing $\GF(2^m)$.
+Theorem~\ref{thm:main} and to the remark on constructing $\GF(2^m)$. A later review for clarity pointed out that $t$ may
+grow with $n$, which gives Corollary~\ref{cor:growing}; the other model checked it, including the choice of $t$.
 
 \paragraph{How the output was checked.} The statements of Section~\ref{sec:lean} are checked by the Lean kernel and by nanoda, an independent kernel.
 The adjacency circuit used in Figure~\ref{fig:gap} was checked against direct field arithmetic on all inputs for small
