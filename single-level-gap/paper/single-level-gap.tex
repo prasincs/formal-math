@@ -17,7 +17,7 @@
 \newtheorem{remark}[theorem]{Remark}
 
 \newcommand{\GF}{\mathrm{GF}}
-\newcommand{\Nm}{\mathrm{N}}
+\newcommand{\Nm}{\mathrm{Nm}}
 \newcommand{\Cone}{C_1}
 \newcommand{\Csize}{C}
 
@@ -29,39 +29,42 @@
 \maketitle
 
 \begin{abstract}
-For a graph $G$, let $f_G=\bigvee_{uv\in E(G)}x_ux_v$. A monotone circuit is single-level if every input--output path
-contains at most one AND gate. Jukna (2006) showed that for some $n$-vertex graphs single-level circuits for $f_G$ are
-polynomially larger than general monotone circuits, by a counting argument, and asked for an explicit graph with such a
-gap. We observe that known ingredients answer this question: the single-level lower bound for graphs without large
-complete bipartite subgraphs (Amano and Maruoka; Jukna), applied to algebraic graphs whose adjacency relation has a
-small circuit over the vertex addresses. For every fixed $t\ge 2$ the bipartite norm graphs of Koll\'ar, R\'onyai and
-Szab\'o, with a clique added on each side, give $\Cone(f_G)/\Csize(f_G)=n^{1-1/t-o(1)}$, and the gap persists against
-monotone formulas. For $t=2$, with the sum-product graph $ac=b+d$ over $\GF(2^k)$, both bounds are formalized in Lean~4
-with Mathlib.
+For a graph $G$, let $f_G=\bigvee_{uv\in E(G)}x_ux_v$. A monotone circuit is single-level if every path in it
+contains at most one AND gate. Jukna (2006) showed by a counting argument that for some $n$-vertex graphs single-level
+circuits for $f_G$ are polynomially larger than general monotone circuits, and asked for an explicit graph with such a
+gap. We observe that known ingredients answer this question. The single-level lower bound of Amano and Maruoka and of
+Jukna applies to any graph whose edges between two vertex classes form a graph without large complete bipartite
+subgraphs; we apply it to algebraic graphs whose adjacency has a small circuit over the vertex addresses. For every fixed
+$t\ge 2$ the bipartite norm graphs of Koll\'ar, R\'onyai and Szab\'o, with a clique added on each side, give
+$\Cone(f_G)/\Csize(f_G)=n^{1-1/t-o(1)}$, and the gap persists against monotone formulas. For $t=2$, with the
+sum-product graph $ac=b+d$ over $\GF(2^k)$, both bounds are formalized in Lean~4 with Mathlib.
 \end{abstract}
 
 \section{Introduction}
 
 Quadratic monotone functions $f_G$ are the simplest functions for which monotone circuit lower bounds are not
 understood. A natural restricted model computes $f_G$ by single-level circuits, in which ANDs are applied only to
-ORs of variables. Whether single-level circuits are optimal was asked as the \emph{single level conjecture}; it was
+ORs of variables. Whether single-level circuits are optimal was asked as the \emph{single level conjecture}. It was
 refuted for the number of AND gates by Lenz and Wegener (as reported in~\cite{AM06,Juk06}) and, for circuit size, by
-Jukna~\cite{Juk06}, who proved that some graphs $G$ on $n$ vertices have
-$\Cone(f_G)/\Csize(f_G)=n^{\Omega(1)}$, where $\Cone$ and $\Csize$ denote single-level and general monotone circuit
-size. The graphs in~\cite{Juk06} come from a counting argument. The original ECCC version of that paper~\cite{JukTR}
-asks, as its Problem~22, to exhibit an explicit $n$-vertex graph with $\mathrm{Gap}(G)=n^{\Omega(1)}$; the problem
-does not appear in the later revisions or in the journal version.
+Jukna~\cite{Juk06}, who proved that some graphs $G$ on $n$ vertices have $\Cone(f_G)/\Csize(f_G)=n^{\Omega(1)}$, where
+$\Cone$ and $\Csize$ denote single-level and general monotone circuit size. The graphs in~\cite{Juk06} come from a
+counting argument. The original ECCC version of that paper~\cite{JukTR} asks, as its Problem~22, for an explicit
+$n$-vertex graph with such a gap; the problem does not appear in the later revisions or in the journal version.
 
 Amano and Maruoka~\cite{AM06} showed $\Cone(f_G)\ge|E(G)|$ for every $G$ without $K_{2,2}$, and remarked that the
-argument extends to $K_{r,r}$-free graphs and that explicit constructions of such graphs might give larger single-level
-lower bounds. Jukna~\cite{Juk06} extended the bound to graphs that contain a $K_{t,t}$-free bipartite graph $H$
-(Lemma~3.13 there), which is what makes adding edges harmless. What has been missing is the other half of an explicit
-gap: graphs that are rich in edges and free of large bicliques, yet have \emph{small} general monotone circuits.
+argument extends to graphs without $K_{r,r}$ and that explicit constructions of such graphs might give larger
+single-level lower bounds. Jukna~\cite{Juk06} (Lemma~3.13 there) extended the bound to every graph $G$ whose edges
+between two disjoint vertex classes $X$ and $Y$ form a bipartite graph $H$ without $K_{t,t}$: edges added inside $X$ or
+inside $Y$ do not hurt the bound. What has been missing is the other half of an explicit gap: graphs that are rich in
+edges and free of large bicliques, yet have \emph{small} general monotone circuits.
 
 \paragraph{Result.} Let $H$ be a bipartite graph between $X$ and $Y$, and let $G=H\cup K_X\cup K_Y$. If the adjacency
 relation of $H$, as a function of the binary addresses of its two endpoints, has a small (non-monotone) circuit, then
 $f_G$ has a monotone circuit of size $O(n\log n)$ plus that circuit's size, by Jukna's address-bit
-substitution~\cite{Juk06}. Norm graphs have this property: adjacency is a norm equation over a finite field.
+substitution~\cite{Juk06}. The cliques are what make this work: the substitution replaces negated address bits by
+monotone ORs, which can wrongly accept inputs with two ones on the same side, and on exactly those inputs $f_G=1$
+because of the cliques. The edges between $X$ and $Y$ are still those of $H$, so the lower bound applies. Norm graphs
+have small adjacency circuits: adjacency is a norm equation over a finite field.
 
 \begin{theorem}\label{thm:main}
 For every fixed $t\ge 2$ there are explicit graphs $G$ on $n$ vertices (for infinitely many $n$) with
@@ -71,11 +74,10 @@ For every fixed $t\ge 2$ there are explicit graphs $G$ on $n$ vertices (for infi
 where $c_t=2^{4-1/t}(t-1)\,t!$. In particular $\Cone(f_G)/\Csize(f_G)=n^{1-1/t-o(1)}$. Moreover $f_G$ has monotone
 formulas with $n\cdot(\log n)^{O(\log t)}$ leaves, so the same gap holds against monotone formula size.
 \end{theorem}
-% TODO: double-check c_t: |H| >= N^{2-1/t}, n = 2N, LB = |H|/(4(t-1)t!) >= (n/2)^{2-1/t}/(4(t-1)t!).
-% (n/2)^{2-1/t} = n^{2-1/t} / 2^{2-1/t}; so c_t = 2^{2-1/t} * 4 (t-1) t! = 2^{4-1/t} (t-1) t!.
 
-For $t=2$ we use the sum-product graph instead of the norm graph, because it has no 4-cycle and its properties are
-elementary; for it, both halves of Theorem~\ref{thm:main} are formalized (Section~\ref{sec:lean}).
+For $t=2$ we use the sum-product graph instead of the norm graph, because it has no 4-cycle (the norm graph for $t=2$
+only has no $K_{2,3}$) and its properties are elementary; for it, both halves of Theorem~\ref{thm:main} are formalized
+(Section~\ref{sec:lean}).
 
 \paragraph{What is new.} The lower bound is that of Amano and Maruoka and of Jukna, with a sharper constant
 (Lemma~\ref{lem:lower}); the graphs are classical; the upper-bound method is Jukna's. The observation is that these fit
@@ -83,22 +85,33 @@ together to answer Problem~22 of~\cite{JukTR} explicitly, with exponent arbitrar
 
 \section{Definitions}
 
-Circuits have fan-in two AND and OR gates over variables $x_v$, $v\in V$, and no constants; size is the number of gates.
-A circuit is \emph{single-level} if no AND gate lies in the cone of an operand of another AND gate. For a wire $w$, let
-$S(w)=\{v: w(e_v)=1\}$ be its \emph{letters}, where $e_v$ is the input with only $x_v=1$. An AND-free wire computes
-$\bigvee_{v\in S(w)}x_v$.
+Graphs are simple. For a graph $G$ on a vertex set $V$ with $|V|=n$, $f_G=\bigvee_{uv\in E(G)}(x_u\wedge x_v)$, a
+monotone function of the variables $x_v$, $v\in V$. For $U\subseteq V$ let $\delta_U\in\{0,1\}^V$ be the input with
+ones exactly on $U$; we write $\delta_v$ and $\delta_{uv}$ for $U=\{v\}$ and $U=\{u,v\}$.
+
+A \emph{circuit} is a directed acyclic graph whose sources are variables and whose other nodes are AND and OR gates of
+fan-in two, with one output node; there are no constants, and a gate may feed any number of later gates. Its
+\emph{wires} are its nodes; the \emph{cone} of a wire is the set of wires with a path to it, including itself. The
+\emph{size} is the number of gates; $\Csize(f)$ is the least size of a circuit computing $f$. A circuit is
+\emph{single-level} if no AND gate lies in the cone of an operand of another AND gate, that is, if every path contains at
+most one AND gate; $\Cone(f)$ is the least size of a single-level circuit computing $f$. A \emph{formula} is a circuit
+in which every gate feeds at most one gate; its size is measured by its number of leaves. A wire is \emph{AND-free} if
+its cone has no AND gate. For a wire $w$, let $S(w)=\{v: w(\delta_v)=1\}$ be its \emph{letters}; an AND-free wire
+computes $\bigvee_{v\in S(w)}x_v$, and $S$ grows along every path of OR gates.
 
 For a bipartite graph $H$ between $X$ and $Y$ and integers $t,s\ge 2$, say $H$ is \emph{$(t,s)$-free} if no $t$
 vertices of $X$ have $s$ common neighbours in $Y$ (equivalently, no $s$ vertices of $Y$ have $t$ common neighbours in
-$X$). Throughout, $G=H\cup K_X\cup K_Y$ on $V=X\sqcup Y$ (Figure~\ref{fig:setup}); so $f_G(x)=1$ iff $x$ has two ones in $X$, or two ones in
-$Y$, or ones at both ends of an edge of $H$.
+$X$). Throughout, $G=H\cup K_X\cup K_Y$ on $V=X\sqcup Y$ (Figure~\ref{fig:setup}); so $f_G(x)=1$ iff $x$ has two ones
+in $X$, or two ones in $Y$, or ones at both ends of an edge of $H$. We write $N_H(u)$ for the neighbours of $u$ in $H$.
 
 \begin{figure}[t]
 \centering
 \begin{adjustbox}{max width=\linewidth}
 \input{figures/fig-setup.tex}
 \end{adjustbox}
-\caption{Left: $G=H\cup K_X\cup K_Y$; the bipartite part $H$ (thick) carries all the difficulty. Right: a single-level circuit computes ORs of variables, then one level of ANDs, then ORs.}\label{fig:setup}
+\caption{Left: $G=H\cup K_X\cup K_Y$; the bipartite part $H$ (thick) carries all the difficulty. Right: a single-level
+circuit for some $f_G$: OR gates over variables, at most one AND gate on every path, then OR gates. Gates may be shared
+(here $x_1\vee x_2$ feeds both AND gates), and the two operands of an AND gate have disjoint letters.}\label{fig:setup}
 \end{figure}
 
 \section{The lower bound}
@@ -108,41 +121,50 @@ If $H$ is $(t,s)$-free then every single-level circuit for $f_G$ has at least $|
 \end{lemma}
 
 For $t=s=2$ this is $|E(H)|\le 4\,\Cone(f_G)$. Up to the constant, the lemma is Lemma~3.13 of~\cite{Juk06}, which gives
-$\Omega(|E(H)|/s^3)$ for $K_{s,s}$-free $H$; the argument below follows the Amano--Maruoka charging~\cite{AM06}.
+$\Omega(|E(H)|/s^3)$ for $H$ without $K_{s,s}$; the argument below follows the Amano--Maruoka charging~\cite{AM06}.
 
 \begin{proof}
-Let $\Gamma$ be a single-level circuit computing $f_G$, with $|\Gamma|$ gates. Since there are no constants, every gate has a variable in its
-cone; so if an AND gate $g$ reaches the output, every path from $g$ to the output consists of OR gates, both operands of
-$g$ are AND-free, and $g(x)=1$ implies $f_G(x)=1$. Let $A,B$ be the letter sets of the operands of such a $g$. Then
-$A\cap B=\emptyset$, since a common letter $z$ would give $f_G(e_z)=1$, and $A\times B\subseteq E(G)$, since $g=1$ on
-$e_{x'}+e_{y'}$ for $x'\in A$, $y'\in B$. Hence $(A\cap X)\times(B\cap Y)\subseteq E(H)$, and $(t,s)$-freeness rules out
-$|A\cap X|\ge t$ together with $|B\cap Y|\ge s$.
+Let $\Gamma$ be a single-level circuit computing $f_G$, with $|\Gamma|$ gates. Fix an order of the two operands of every
+gate. Let $g$ be an AND gate that has a path to the output. Because $\Gamma$ is single-level, every gate on such a path
+after $g$ is an OR gate, so $g(x)=1$ implies $f_G(x)=1$; and both operands of $g$ are AND-free. Let $A,B$ be the
+letters of the two operands. Then $A\cap B=\emptyset$, since a common letter $z$ would give $f_G(\delta_z)=1$; and
+$g(\delta_{x'y'})=1$ for $x'\in A$, $y'\in B$, so $x'y'\in E(G)$. Hence $(A\cap X)\times(B\cap Y)\subseteq E(H)$, and
+$(t,s)$-freeness rules out $|A\cap X|\ge t$ together with $|B\cap Y|\ge s$.
 
-Fix an edge $uv$ of $H$, $u\in X$, $v\in Y$. On $e_u+e_v$ the output is $1$; descending from the output through OR gates
-of value $1$ ends at a wire that is not an OR gate. It is not a variable, as $f_G$ vanishes on single vertices, so it is
-an AND gate $g$ reaching the output with $g(e_u+e_v)=1$. Both operands of $g$ meet $\{u,v\}$ and they are disjoint, so
-we may name them so that $u\in A$ and $v\in B$. Fix one such pair $(g,\text{naming})$ for each edge. Let $a=|A\cap X|$
-and $b=|B\cap Y|$. We charge $uv$ to a code in $\{\text{gates}\}\times\{0,1\}\times\{0,1\}$:
+Fix an edge $uv$ of $H$, $u\in X$, $v\in Y$. The output is $1$ on $\delta_{uv}$. Descend from the output, always to an
+operand of value $1$, while the current wire is an OR gate. The descent ends at a variable or an AND gate. It is not a
+variable $x_w$: the path from $x_w$ to the output has only OR gates, so the output would be $1$ on $\delta_w$, while
+$f_G(\delta_w)=0$. So it ends at an AND gate $g$ with a path to the output and $g(\delta_{uv})=1$; fix one such $g$ for
+each edge. Both operands of $g$ are $1$ on $\delta_{uv}$, so both have a letter in $\{u,v\}$, and their letters are
+disjoint; call $A$ the letters of the operand containing $u$ and $B$ those of the one containing $v$. Let
+$a=|A\cap X|$ and $b=|B\cap Y|$. We charge $uv$ to a \emph{code} $(\text{gate},\,i,\,p)$ with an \emph{input bit}
+$i\in\{0,1\}$ and a \emph{part bit} $p\in\{0,1\}$:
 
-\emph{Case $b\ge s$} (so $a\le t-1$; Figure~\ref{fig:charging}). In the AND-free cone of the operand with letters $B$, follow a path from the input
-$x_v$ to that operand. The number of $Y$-letters is nondecreasing along it, starts at $1<s$ and ends at $b\ge s$. Let $h$
-be the first wire with at least $s$ $Y$-letters; it is an OR gate, and its operand $o$ on the path contains $v$ and has
-at most $s-1$ $Y$-letters. Charge $uv$ to $(h,\,\text{which operand of }h\text{ is }o,\,0)$.
+\emph{Case $b\ge s$} (so $a\le t-1$; Figure~\ref{fig:charging}). In the cone of the operand with letters $B$, which is
+AND-free, follow a path from $x_v$ to that operand. The number of $Y$-letters does not decrease along it; it is
+$1<s$ at $x_v$ and $b\ge s$ at the end. Let $h$ be the first wire on the path with at least $s$ $Y$-letters. It is an
+OR gate; let $o$ be its operand on the path, so $v\in S(o)$ and $o$ has at most $s-1$ $Y$-letters. Charge $uv$ to
+$(h,i,0)$, where $o$ is operand $i$ of $h$.
 
-\emph{Case $a\ge t$} (so $b\le s-1$). Symmetrically, walking from $x_u$ in the cone of the operand with letters $A$, let
-$h$ be the first wire with at least $t$ $X$-letters and $o$ its operand on the path. Charge $uv$ to
-$(h,\,\text{which operand},\,1)$.
+\emph{Case $a\ge t$} (so $b\le s-1$). Symmetrically, follow a path from $x_u$ in the cone of the operand with letters
+$A$, let $h$ be the first wire on it with at least $t$ $X$-letters and $o$ its operand on the path, and charge $uv$ to
+$(h,i,1)$, where $o$ is operand $i$ of $h$.
 
-\emph{Case $a\le t-1$, $b\le s-1$.} Charge $uv$ to $(g,\,\text{which operand of }g\text{ holds }u,\,0)$.
+\emph{Case $a\le t-1$, $b\le s-1$.} Charge $uv$ to $(g,i,0)$, where operand $i$ of $g$ is the one with letters $A$.
 
-Codes of the first two cases have an OR gate in the first coordinate and are told apart by the last bit; codes of the
-third case have an AND gate. Fix a code. In the first case $h$ is AND-free, so $S(h)$ and $S(o)$ depend only on the
-code. Fix $s$ of the $Y$-letters of $h$ (depending only on $h$). Every edge $uv$ charged to the code has
-$S(h)\cap Y\subseteq B\cap Y\subseteq N_H(u)$ for its own $g$, so $u$ is a common neighbour of these $s$ vertices: at
-most $t-1$ choices. And $v\in S(o)\cap Y$: at most $s-1$ choices. The second case is symmetric ($t$ $X$-letters have at
-most $s-1$ common neighbours; $u$ is one of fewer than $t$ $X$-letters of $o$). In the third case $u\in A\cap X$ and
-$v\in B\cap Y$ with $A,B$ determined by the code: at most $ab\le(t-1)(s-1)$ edges. So every code receives at most
-$(t-1)(s-1)$ edges, there are at most $4|\Gamma|$ codes, and $|E(H)|\le 4(t-1)(s-1)\,|\Gamma|$.
+In the first two cases the gate of the code is an OR gate and the part bit tells the cases apart; in the third case it
+is an AND gate. So each code belongs to one case. We show that each code receives at most $(t-1)(s-1)$ edges.
+
+\emph{First case.} The code fixes $h$ and $o$, hence $S(h)$ and $S(o)$, whichever AND gate $g$ an edge used. Fix $s$
+vertices of $S(h)\cap Y$, depending only on $h$. Let $uv$ be charged to the code through $g$. The gates on the path
+from $h$ to the operand of $g$ with letters $B$ are OR gates, so $S(h)\subseteq B$, and
+$S(h)\cap Y\subseteq B\cap Y\subseteq N_H(u)$. So $u$ is a common neighbour of the $s$ fixed vertices: at most $t-1$
+choices. And $v\in S(o)\cap Y$: at most $s-1$ choices. \emph{Second case}, symmetrically: $t$ fixed $X$-letters of $h$
+have at most $s-1$ common neighbours, $v$ among them, and $u$ is one of at most $t-1$ $X$-letters of $o$. \emph{Third
+case.} The code fixes $g$ and which operand has letters $A$, so $u\in A\cap X$ and $v\in B\cap Y$ with $A$ and $B$
+fixed: at most $ab\le(t-1)(s-1)$ edges.
+
+There are at most $4|\Gamma|$ codes, so $|E(H)|\le 4(t-1)(s-1)\,|\Gamma|$.
 \end{proof}
 
 \begin{figure}[t]
@@ -150,30 +172,41 @@ $(t-1)(s-1)$ edges, there are at most $4|\Gamma|$ codes, and $|E(H)|\le 4(t-1)(s
 \begin{adjustbox}{max width=\linewidth}
 \input{figures/fig-charging.tex}
 \end{adjustbox}
-\caption{Case $b\ge s$ in the proof of Lemma~\ref{lem:lower}. The walk from $x_v$ inside the AND-free cone of $g$'s second operand reaches a first wire $h$ with at least $s$ letters in $Y$; since $h$ is AND-free, the code $(h,\text{side},0)$ determines $S(h)$ and $S(o)$ whichever $g$ the edge used. The case $a\ge t$ is the mirror image with side bit~$1$.}\label{fig:charging}
+\caption{Case $b\ge s$ in the proof of Lemma~\ref{lem:lower}. The path from $x_v$ inside the AND-free cone of $g$'s
+operand with letters $B$ reaches a first wire $h$ with at least $s$ letters in $Y$; $o$ is operand $i$ of $h$. The code
+$(h,i,0)$ fixes $S(h)$ and $S(o)$, and $S(h)\subseteq B$ whichever $g$ the edge used. The case $a\ge t$ is the mirror
+image, with part bit $1$.}\label{fig:charging}
 \end{figure}
 
 \section{The upper bound}
 
-Let $X$ and $Y$ be identified with $\{0,1\}^m$ by an address map. For $j\le m$ and $e\in\{0,1\}$ let
-$s^{e}_{X,j}=\bigvee\{x_u: u\in X,\ u_j=e\}$ and define $s^e_{Y,j}$ likewise. Let
-$T_2(X)=\bigvee_j (s^0_{X,j}\wedge s^1_{X,j})$, which is $1$ iff at least two variables of $X$ are on.
+Let $m\ge 1$, $N=2^m$, and identify $X$ and $Y$ with $\{0,1\}^m$ by an address map. For $1\le j\le m$ and
+$e\in\{0,1\}$ let $\sigma^{e}_{X,j}=\bigvee\{x_u: u\in X,\ u_j=e\}$, an OR of $N/2$ variables, and define
+$\sigma^e_{Y,j}$ likewise. Let $T_2(X)=\bigvee_j (\sigma^0_{X,j}\wedge \sigma^1_{X,j})$, which is $1$ iff at least two
+variables of $X$ are on.
+
+A \emph{negation-normal-form} (NNF) circuit over $\alpha,\beta\in\{0,1\}^m$ is a circuit of fan-in-two AND and OR gates
+over the literals $\alpha_j,\neg\alpha_j,\beta_j,\neg\beta_j$, without constants; $|\phi|$ is its number of gates and,
+for an NNF formula, $L(\phi)$ its number of leaves.
 
 \begin{lemma}[address-bit substitution, after~\cite{Juk06}]\label{lem:subst}
-Let $\phi(\alpha,\beta)$ be a negation-normal-form circuit (resp.\ formula) over $\alpha,\beta\in\{0,1\}^m$ with
-$\phi(\alpha,\beta)=1$ iff $\alpha\beta\in E(H)$. Replace each literal $\alpha_j$, $\neg\alpha_j$, $\beta_j$,
-$\neg\beta_j$ by $s^1_{X,j}$, $s^0_{X,j}$, $s^1_{Y,j}$, $s^0_{Y,j}$ to get a monotone $\tilde\phi$. Then
+Let $\phi(\alpha,\beta)$ be an NNF circuit (resp.\ formula) with $\phi(\alpha,\beta)=1$ iff $\alpha\beta\in E(H)$.
+Replace each literal $\alpha_j$, $\neg\alpha_j$, $\beta_j$, $\neg\beta_j$ by $\sigma^1_{X,j}$, $\sigma^0_{X,j}$,
+$\sigma^1_{Y,j}$, $\sigma^0_{Y,j}$ to get a monotone $\tilde\phi$. Then
 \[ f_G = T_2(X)\vee T_2(Y)\vee\Big(\textstyle\bigvee_{X}x_u\wedge\bigvee_{Y}x_v\wedge\tilde\phi\Big). \]
-Consequently $\Csize(f_G)\le 2mN+|\phi|+4m+O(1)$ with $N=2^m$, where $|\phi|$ is the number of gates of $\phi$, and
-$f_G$ has a monotone formula with $\tfrac N2 L(\phi)+O(mN)$ leaves, where $L(\phi)$ is the leaf count of $\phi$.
+Consequently $\Csize(f_G)\le 2mN+|\phi|+4$, and $f_G$ has a monotone formula with $\tfrac N2 L(\phi)+(2m+2)N$ leaves.
 \end{lemma}
 
 \begin{proof}
 If two variables on one side are on, they differ in some address bit, so $T_2=1=f_G$. If at most one is on per side and
 one side is empty, then $T_2(X)=T_2(Y)=0$ and the guard $\bigvee_Xx_u\wedge\bigvee_Yx_v$ is $0$, as is $f_G$. If exactly
-$u\in X$ and $v\in Y$ are on, each $s^e_{X,j}$ equals the truth value of $u_j=e$, so $\tilde\phi$ evaluates $\phi$ at
-the addresses of $u$ and $v$. For the size (Figure~\ref{fig:upper}): the $4m$ sums take $N/2-1$ gates each, the guard reuses $s^0_{\cdot,1}\vee
-s^1_{\cdot,1}$, and $T_2$ takes $2m-1$ gates per side.
+$u\in X$ and $v\in Y$ are on, each $\sigma^e_{X,j}$ equals the truth value of $u_j=e$, so $\tilde\phi$ evaluates $\phi$
+at the addresses of $u$ and $v$.
+
+Circuit size (Figure~\ref{fig:upper}): the $4m$ sums take $N/2-1$ gates each, $2mN-4m$ in all; $T_2(X)$ and $T_2(Y)$
+take $2m-1$ gates each; $\bigvee_X x_u=\sigma^0_{X,1}\vee\sigma^1_{X,1}$ and $\bigvee_Y x_v$ take one gate each; two AND
+gates and two OR gates combine the four terms. The total is $2mN+|\phi|+4$. Formula size: each leaf of $\phi$ becomes a
+sum of $N/2$ leaves, $\frac N2L(\phi)$ in all; $T_2(X)$ and $T_2(Y)$ have $mN$ leaves each, and the guard $2N$.
 \end{proof}
 
 \begin{figure}[t]
@@ -181,77 +214,93 @@ s^1_{\cdot,1}$, and $T_2$ takes $2m-1$ gates per side.
 \begin{adjustbox}{max width=\linewidth}
 \input{figures/fig-upper.tex}
 \end{adjustbox}
-\caption{The monotone circuit of Lemma~\ref{lem:subst}. The $4m$ address sums dominate the size; the adjacency test enters only through $\tilde\phi$, whose size is that of the non-monotone circuit $\phi$.}\label{fig:upper}
+\caption{The monotone circuit of Lemma~\ref{lem:subst}. The $4m$ address sums dominate the size; the guard
+$\bigvee_X x_u=\sigma^0_{X,1}\vee\sigma^1_{X,1}$ costs one gate per side; the adjacency test enters only through
+$\tilde\phi$, which has the size of the non-monotone circuit $\phi$.}\label{fig:upper}
 \end{figure}
 
 \subsection{Norm graphs}
 
-Let $q=2^k$, $F=\GF(q^t)$, $m=kt$, $N=q^t$, and $\Nm(z)=z^{1+q+\dots+q^{t-1}}$. The bipartite norm graph $H$ has
-$X=Y=F$ and $x\sim y$ iff $\Nm(x+y)=1$. Each vertex has degree $(q^t-1)/(q-1)$, so $|E(H)|\ge N^{2-1/t}$, and by
-Koll\'ar, R\'onyai and Szab\'o~\cite{KRS96} any $t$ distinct $x_1,\dots,x_t$ have at most $t!$ common neighbours; since
-$H$ is symmetric, $H$ is $(t,t!+1)$-free. (We use the statement as given in~\cite[Example~13.24]{BFC}.
-TODO: compare with~\cite{KRS96} directly.)
+Let $k\ge 1$, $q=2^k$, $F=\GF(q^t)$, $m=kt$, $N=q^t=2^m$, and $\Nm(z)=z^{1+q+\dots+q^{t-1}}$, the norm from $F$ to
+$\GF(q)$. The bipartite norm graph $H$ has two copies of $F$ as $X$ and $Y$, and $\xi\in X$ is adjacent to $\eta\in Y$
+iff $\Nm(\xi+\eta)=1$. Each vertex has degree $(q^t-1)/(q-1)$, so $|E(H)|\ge N^{2-1/t}$, and by Koll\'ar, R\'onyai and
+Szab\'o~\cite{KRS96} any $t$ distinct $\xi_1,\dots,\xi_t$ have at most $t!$ common neighbours; since the relation is
+symmetric, $H$ is $(t,t!+1)$-free. (We use the statement as given in~\cite[Example~13.24]{BFC}. TODO: compare
+with~\cite{KRS96} directly.)
 
 \begin{lemma}\label{lem:normcircuit}
-``$\Nm(\alpha+\beta)=1$'' has a negation-normal-form circuit with $O(tm^2)$ gates and formula with $m^{O(\log t)}$
-leaves.
+``$\Nm(\alpha+\beta)=1$'' has an NNF circuit with $O(tm^2)$ gates and an NNF formula with $m^{O(\log t)}$ leaves.
 \end{lemma}
 
 \begin{proof}
-Fix a basis of $F$ over $\GF(2)$. Addition is coordinatewise XOR; each Frobenius power $z\mapsto z^{q^i}$ is
-$\GF(2)$-linear, so each output coordinate is an XOR of at most $m$ input coordinates; multiplication is
-$\GF(2)$-bilinear, so each output coordinate is an XOR of at most $m^2$ products of coordinates. Compute the $t$
-conjugates of $z=\alpha+\beta$, multiply them in a balanced binary tree of depth $\lceil\log_2 t\rceil$, and test the
-result against the coordinates of $1$ with an AND of $m$ literals. In dual-rail form an XOR costs $O(1)$ gates, giving
-$O(tm^2)$ gates. For formulas, a balanced XOR of $R$ dual-rail formulas has $O(R^2)$ times their leaves, so each level
-of the product tree multiplies leaf counts by $O(m^4)$, and the total is $m\cdot O(m^2)\cdot O(m^4)^{\lceil\log_2
-t\rceil}=m^{O(\log t)}$.
+Represent $F$ in a polynomial basis, $F=\GF(2)[\theta]/(P)$ with $P$ irreducible of degree $m$, and carry every bit $b$
+as the pair $(b,\neg b)$ (dual rail); a dual-rail XOR of two bits costs $6$ gates, and a dual-rail AND $2$. The
+coordinates of $z=\alpha+\beta$ are XORs of two literals. Each Frobenius power $z\mapsto z^{q^i}$ is $\GF(2)$-linear, so
+each of its $m$ output coordinates is an XOR of at most $m$ input coordinates: $O(m^2)$ gates for each of the $t$
+conjugates. A product of two elements costs $O(m^2)$ gates: the $m^2$ products of coordinates, the $2m-1$ coefficients
+of the product polynomial (each an XOR of at most $m$ of them), and the reduction modulo $P$, a linear map from $2m-1$
+coefficients to $m$ coordinates. The $t$ conjugates are multiplied in a balanced tree with $t-1$ products, and the result
+is compared with the coordinates of $1$ by an AND of $m$ literals. In all, $O(tm^2)$ gates.
+
+For formulas, a balanced XOR of $R$ dual-rail formulas with at most $L$ leaves on each rail has at most
+$4^{\lceil\log_2 R\rceil}L\le 4R^2L$ leaves on each rail. Each output coordinate of a product is an XOR of at most
+$2m^2$ products of coordinates, so each level of the product tree multiplies leaf counts by $O(m^4)$, and the total is
+$m\cdot O(m^2)\cdot O(m^4)^{\lceil\log_2 t\rceil}=m^{O(\log t)}$.
 \end{proof}
 
 \begin{remark}
-Explicitness requires a representation of $\GF(2^m)$; an irreducible polynomial of degree $m$ over $\GF(2)$ can be
-found deterministically in time polynomial in $m$. TODO [unchecked]: cite Shoup (1990), as suggested by a reviewer.
+Explicitness requires a representation of $\GF(2^m)$, that is, an irreducible polynomial of degree $m$ over $\GF(2)$.
+Trying all $2^m=n/2$ monic candidates finds one in time polynomial in $n$, which is enough for an explicit graph. A
+construction in time polynomial in $m=O(\log n)$ is Shoup's (TODO [unchecked]: cite Shoup, 1990).
 \end{remark}
 
 \begin{proof}[Proof of Theorem~\ref{thm:main}]
-Take $H$ the norm graph and $n=2N$. Lemma~\ref{lem:lower} with $s=t!+1$ gives $\Cone(f_G)\ge
-N^{2-1/t}/(4(t-1)t!)$. Lemmas~\ref{lem:subst} and~\ref{lem:normcircuit} give $\Csize(f_G)\le 2mN+O(tm^2)=(1+o(1))\,n
-\log_2 n$ for fixed $t$ as $k\to\infty$, and formulas with $N m^{O(\log t)}$ leaves.
+Take $H$ the norm graph, so $n=2N$. Lemma~\ref{lem:lower} with $s=t!+1$ gives
+$\Cone(f_G)\ge N^{2-1/t}/(4(t-1)t!)=n^{2-1/t}/c_t$. Lemmas~\ref{lem:subst} and~\ref{lem:normcircuit} give
+$\Csize(f_G)\le 2mN+O(tm^2)$, with $2mN=n(\log_2 n-1)$, so $\Csize(f_G)\le(1+o(1))\,n\log_2 n$ for fixed $t$ as
+$k\to\infty$; and formulas with $N m^{O(\log t)}+O(mN)=n\cdot(\log n)^{O(\log t)}$ leaves.
 \end{proof}
 
 \section{The case \texorpdfstring{$t=2$}{t=2} in Lean}\label{sec:lean}
 
-Let $F=\GF(2^k)$, $X=Y=F^2$, and $(a,b)\sim(c,d)$ iff $ac=b+d$: the sum-product graph~\cite[Example~7.5]{BFC}. It has
-$N^{3/2}$ edges ($N=4^k$) and no 4-cycle, since two equations $ax=b+y$, $cx=d+y$ with $(a,b)\ne(c,d)$ have at most one
-common solution. Adjacency is a test of $2k$ coordinate equations, each a bilinear form plus a linear form.
+Let $F=\GF(2^k)$, let $X$ and $Y$ be two copies of $F^2$, and join $(a,b)\in X$ to $(c,d)\in Y$ iff $ac=b+d$: the
+sum-product graph~\cite[Example~7.5]{BFC}. It has $N^{3/2}$ edges ($N=4^k$) and no 4-cycle: for distinct $(a,b)$ and
+$(a',b')$ in $X$, the equations $ac=b+d$ and $a'c=b'+d$ have at most one common solution $(c,d)$. Adjacency is one
+equation in $F$, that is, $k$ equations over $\GF(2)$, each a bilinear form in $(a,c)$ plus coordinates of $b$ and $d$.
 
 The Lean development (Lean~4.36, Mathlib; project \texttt{single-level-gap} of \url{https://github.com/prasincs/formal-math})
-defines circuits, single-level circuits and monotone formulas from scratch and proves, for every $k\ge 1$:
+defines circuits, single-level circuits and monotone formulas from scratch. Circuits are indexed fan-in-two gates, each
+reading earlier wires, so gates may be shared as in Section~2. It proves, for every $k\ge 1$:
 \begin{itemize}
 \item every single-level circuit with $M$ gates computing $f_G$ satisfies $8^k\le 4M$ (that is,
-$|E(H)|\le 4\,\Cone(f_G)$; the general lemma \texttt{single\_level\_lower} holds for every 4-cycle-free bipartite $H$);
+$|E(H)|\le 4\,\Cone(f_G)$; the general lemma \texttt{single\_level\_lower} holds for every bipartite $H$ without a
+4-cycle);
 \item $f_G$ has a monotone formula with at most $4^k\,(8k+2+8k(k^2+2)^2)$ leaves.
 \end{itemize}
 The theorems depend only on the axioms \texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}, and a second,
-independent kernel (nanoda) accepts the exported proofs and rejects ten tampered copies that change what is claimed. This gives an explicit gap of
-$\sqrt N/O(k^5)=n^{1/2-o(1)}$ against formulas. TODO: decide whether to formalize Lemma~\ref{lem:lower} for general
-$(t,s)$; the norm-graph freeness theorem is not in Mathlib.
+independent kernel (nanoda) accepts the exported proofs and rejects ten tampered copies that change what is claimed.
+Together with an explicit construction of $\GF(2^k)$ (the Lean field is Mathlib's \texttt{GaloisField}, defined
+non-constructively), this gives a gap of $\Omega(\sqrt N/k^5)=n^{1/2-o(1)}$ against formulas. TODO: decide whether to
+formalize Lemma~\ref{lem:lower} for general $(t,s)$; the norm-graph freeness theorem is not in Mathlib.
 
 \section{Remarks}
 
 \begin{figure}[t]
 \centering
 \input{figures/fig-gap.tex}
-\caption{The proven gap bound for norm graphs: $\log_2$ of the lower bound of Lemma~\ref{lem:lower} on $\Cone(f_G)$ divided by the size of the circuit of Lemma~\ref{lem:subst}, for $q=2^k$ and $n=2q^t\le 2^{65}$. The slopes approach $1-1/t$; the gap exceeds $1$ above the dashed line. The true gap can only be larger.}\label{fig:gap}
+\caption{Computed gap bounds for norm graphs: $\log_2$ of the lower bound of Lemma~\ref{lem:lower} on $\Cone(f_G)$
+divided by the size of the circuit of Lemma~\ref{lem:subst} with our circuit $\phi$, at $n=2^{kt+1}\le 2^{65}$ (marks;
+the lines only connect them). The slopes approach $1-1/t$; the gap exceeds $1$ above the dashed line. The true gap can
+only be larger.}\label{fig:gap}
 \end{figure}
 
 \begin{itemize}
-\item The constant factors are large. With the circuit bound, the computed gap for norm graphs exceeds $1$ only
-from about $n\approx 2^{17}$ ($t=2,3$) or $2^{19}$ ($t=4$); against formulas, only at astronomically large $n$.
-Figure~\ref{fig:gap} plots these values. They were computed by our program, which builds $\phi$ gate by gate
-over a fixed irreducible polynomial, counts the circuit of Lemma~\ref{lem:subst} exactly, and uses the lower bound
-$|E(H)|/(4(t-1)\,t!)$; $\phi$ was checked against direct field arithmetic on all input pairs for
-$(k,t)\in\{(1,2),(2,2),(3,2),(4,2),(1,3),(2,3),(1,4)\}$.
+\item The constant factors are large. With the circuit bound, the first norm graphs with a computed gap above $1$ have
+$n=2^{17}$ ($t=2$, $k=8$, where the gap is barely above $1$), $n=2^{19}$ ($t=3$, $k=6$) and $n=2^{21}$ ($t=4$, $k=5$);
+against formulas, only astronomically large $n$. Figure~\ref{fig:gap} plots these values. They were computed by our
+program, which builds $\phi$ gate by gate in a polynomial basis, counts the circuit of Lemma~\ref{lem:subst} exactly,
+and uses the lower bound $|E(H)|/(4(t-1)\,t!)$; $\phi$ was checked against direct field arithmetic on all input pairs
+for $(k,t)\in\{(1,2),(2,2),(3,2),(4,2),(1,3),(2,3),(1,4)\}$.
 \item Theorem~\ref{thm:main} does not give a linear gap: the counting argument of~\cite{Juk06} gives
 $n/\log^{O(1)}n$ for non-explicit graphs. Is there an explicit graph with $\Cone(f_G)/\Csize(f_G)=n^{1-o(1)}$?
 Projective norm graphs~\cite{ARS99} [unchecked] improve $t!$ to $(t-1)!$ but not the exponent.
@@ -276,7 +325,7 @@ Figure~\ref{fig:gap} and the figures, and drafted the text.
 \paragraph{Gemini (Google).} Two Gemini models, from a different model family, refereed Lemma~\ref{lem:lower},
 Lemma~\ref{lem:subst} and the gap estimate independently. One of them found that an earlier version of the charging
 argument did not separate the two walk cases, and gave a six-vertex instance where two edges received the same code;
-the side bit in the proof of Lemma~\ref{lem:lower} fixes this. The reviews also led to the asymptotic form of
+the part bit in the proof of Lemma~\ref{lem:lower} fixes this. The reviews also led to the asymptotic form of
 Theorem~\ref{thm:main} and to the remark on constructing $\GF(2^m)$.
 
 \paragraph{How the output was checked.} The statements of Section~\ref{sec:lean} are checked by the Lean kernel and by nanoda, an independent kernel.

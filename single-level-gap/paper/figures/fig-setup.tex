@@ -33,30 +33,31 @@
   }
   \node[font=\small] at (1.5,-2.15) {$H$: no $t$ vertices of $X$ with $s$ common neighbours};
 
-  % ---- right: a single-level circuit ----
-  \begin{scope}[xshift=7cm,yshift=-1.9cm]
+  % ---- right: a single-level circuit (fan-in two; operands of each AND have disjoint letters) ----
+  \begin{scope}[xshift=7cm,yshift=-2.1cm]
     \foreach \i in {1,...,6} {
       \node[inp] (v\i) at ({(\i-1)*0.75},0) {$x_{\i}$};
     }
-    \node[gate] (o1) at (0.0,1.2) {$\vee$};
-    \node[gate] (o2) at (1.25,1.2) {$\vee$};
-    \node[gate] (o3) at (2.5,1.2) {$\vee$};
-    \node[gate] (o4) at (3.75,1.2) {$\vee$};
-    \foreach \pp/\qq in {1/o1,2/o1,3/o1,2/o2,4/o2,3/o3,5/o3,4/o4,5/o4,6/o4} {
-      \draw[wire] (v\pp) -- (\qq);
-    }
-    \node[gate] (a1) at (0.6,2.45) {$\wedge$};
-    \node[gate] (a2) at (3.1,2.45) {$\wedge$};
+    \node[gate] (o1) at (0.375,1.1) {$\vee$};
+    \node[gate] (o2) at (1.875,1.1) {$\vee$};
+    \node[gate] (o3) at (3.375,1.1) {$\vee$};
+    \node[gate] (o4) at (3.0,2.1) {$\vee$};
+    \draw[wire] (v1) -- (o1); \draw[wire] (v2) -- (o1);
+    \draw[wire] (v3) -- (o2); \draw[wire] (v4) -- (o2);
+    \draw[wire] (v5) -- (o3); \draw[wire] (v6) -- (o3);
+    \draw[wire] (o3) -- (o4); \draw[wire] (v4) -- (o4);
+    \node[gate] (a1) at (1.0,3.1) {$\wedge$};
+    \node[gate] (a2) at (2.4,3.1) {$\wedge$};
     \draw[wire] (o1) -- (a1); \draw[wire] (o2) -- (a1);
-    \draw[wire] (o3) -- (a2); \draw[wire] (o4) -- (a2);
-    \node[gate] (out) at (1.85,3.6) {$\vee$};
+    \draw[wire] (o1) -- (a2); \draw[wire] (o4) -- (a2);
+    \node[gate] (out) at (1.7,4.1) {$\vee$};
     \draw[wire] (a1) -- (out); \draw[wire] (a2) -- (out);
     \draw[wire] (out) -- ++(0,0.65) node[above,font=\small] {$f_G$};
-    \draw[decorate,decoration={brace,amplitude=4pt}] (4.45,0.95) -- (4.45,-0.1)
+    \draw[decorate,decoration={brace,amplitude=4pt}] (4.25,2.4) -- (4.25,0.8)
       node[midway,right=5pt,font=\footnotesize,align=left] {ORs of\\variables};
-    \draw[decorate,decoration={brace,amplitude=4pt}] (4.45,2.75) -- (4.45,2.15)
+    \draw[decorate,decoration={brace,amplitude=4pt}] (4.25,3.4) -- (4.25,2.8)
       node[midway,right=5pt,font=\footnotesize,align=left] {one AND\\level};
-    \draw[decorate,decoration={brace,amplitude=4pt}] (4.45,4.0) -- (4.45,3.3)
+    \draw[decorate,decoration={brace,amplitude=4pt}] (4.25,4.4) -- (4.25,3.8)
       node[midway,right=5pt,font=\footnotesize] {ORs};
   \end{scope}
 \end{tikzpicture}

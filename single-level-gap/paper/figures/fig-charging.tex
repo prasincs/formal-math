@@ -24,7 +24,7 @@
   % walk from x_v to the operand
   \node[pt] (o) at (1.45,0.95) {};
   \node[gate,fill=white] (h) at (1.6,1.85) {$\vee$};
-  \draw[very thick] (xv) -- (o);
+  \draw[very thick,dashed] (xv) -- (o);
   \draw[very thick,wire] (o) -- (h);
   \draw[very thick,dashed] (h) -- (aB);
   \draw[wire] (2.45,0.75) -- (h);
@@ -34,7 +34,7 @@
   \draw[gray] (3.35,1.5) -- (1.9,1.85);
   % the count
   \node[font=\footnotesize,align=center,anchor=north] at (0,-0.65) {%
-    Charge $uv$ to the code $(h,\ \text{side of } o,\ 0)$. Given the code,\\
+    Charge $uv$ to the code $(h,i,0)$, where $o$ is operand $i$ of $h$. Given the code,\\
     $u$ is a common neighbour of $s$ fixed $Y$-letters of $h$ (at most $t-1$ choices),\\
     and $v\in S(o)\cap Y$ (at most $s-1$ choices).};
 \end{tikzpicture}
